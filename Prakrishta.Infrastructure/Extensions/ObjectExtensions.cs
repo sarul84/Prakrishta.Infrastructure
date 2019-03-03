@@ -10,6 +10,7 @@
 namespace Prakrishta.Infrastructure.Extensions
 {
     using System;
+    using System.ComponentModel;
 
     /// <summary>
     /// Object extension class
@@ -66,6 +67,45 @@ namespace Prakrishta.Infrastructure.Extensions
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Converts object value to specified type
+        /// </summary>
+        /// <param name="value">The source object</param>
+        /// <param name="type">The target type</param>
+        /// <returns>Converted type</returns>
+        public static object To(this Object @value, Type type)
+        {
+            if (!value.IsNullOrDBNull())
+            {
+                Type targetType = type;
+
+                if (value.GetType() == targetType)
+                {
+                    return value;
+                }
+
+                TypeConverter converter = TypeDescriptor.GetConverter(value);
+                if (converter != null)
+                {
+                    if (converter.CanConvertTo(targetType))
+                    {
+                        return converter.ConvertTo(value, targetType);
+                    }
+                }
+
+                converter = TypeDescriptor.GetConverter(targetType);
+                if (converter != null)
+                {
+                    if (converter.CanConvertFrom(value.GetType()))
+                    {
+                        return converter.ConvertFrom(value);
+                    }
+                }
+            }
+
+            return value;
         }
     }
 }

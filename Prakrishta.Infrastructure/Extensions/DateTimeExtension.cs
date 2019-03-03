@@ -59,6 +59,27 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
+        /// Get number of days between two dates
+        /// </summary>
+        /// <param name="currentDate">The start date</param>
+        /// <param name="date">The end date</param>
+        /// <returns>Number of days</returns>
+        public static double NumberOfDays(this DateTime currentDate, DateTime date)
+        {
+            return currentDate.Subtract(date).TotalDays;
+        }
+
+        /// <summary>
+        /// Get number of days between the date and today
+        /// </summary>
+        /// <param name="dateTime">The start date</param>
+        /// <returns>Number of days</returns>
+        public static double NumberOfDays(this DateTime dateTime)
+        {
+            return dateTime.Subtract(DateTime.Now).TotalDays;
+        }
+
+        /// <summary>
         /// Gets the last date of the month of the DateTime.
         /// </summary>
         /// <param name="dateTime">date value</param>
@@ -66,6 +87,56 @@ namespace Prakrishta.Infrastructure.Extensions
         public static DateTime GetLastDayOfMonth(this DateTime dateTime)
         {
             return new DateTime(dateTime.Year, dateTime.Month, 1).AddMonths(1).AddDays(-1);
+        }
+
+        /// <summary>
+        /// Sets the time of the current date with minute precision.
+        /// </summary>
+        /// <param name="current">The current date.</param>
+        /// <param name="hour">The hour.</param>
+        /// <returns>A DateTime.</returns>
+        public static DateTime SetTime(this DateTime current, int hour)
+        {
+            return SetTime(current, hour, 0, 0, 0);
+        }
+
+        /// <summary>
+        /// Sets the time of the current date with minute precision.
+        /// </summary>
+        /// <param name="current">The current date.</param>
+        /// <param name="hour">The hour.</param>
+        /// <param name="minute">The minute.</param>
+        /// <returns>A DateTime.</returns>
+        public static DateTime SetTime(this DateTime current, int hour, int minute)
+        {
+            return SetTime(current, hour, minute, 0, 0);
+        }
+
+        /// <summary>
+        /// Sets the time of the current date with second precision.
+        /// </summary>
+        /// <param name="current">The current date.</param>
+        /// <param name="hour">The hour.</param>
+        /// <param name="minute">The minute.</param>
+        /// <param name="second">The second.</param>
+        /// <returns>A DateTime.</returns>
+        public static DateTime SetTime(this DateTime current, int hour, int minute, int second)
+        {
+            return SetTime(current, hour, minute, second, 0);
+        }
+
+        /// <summary>
+        /// Sets the time of the current date with millisecond precision.
+        /// </summary>
+        /// <param name="current">The current date.</param>
+        /// <param name="hour">The hour.</param>
+        /// <param name="minute">The minute.</param>
+        /// <param name="second">The second.</param>
+        /// <param name="millisecond">The millisecond.</param>
+        /// <returns>A DateTime.</returns>
+        public static DateTime SetTime(this DateTime current, int hour, int minute, int second, int millisecond)
+        {
+            return new DateTime(current.Year, current.Month, current.Day, hour, minute, second, millisecond);
         }
     }
 }

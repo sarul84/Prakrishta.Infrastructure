@@ -10,23 +10,11 @@
 namespace Prakrishta.Infrastructure.AsyncInterfaces
 {
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Interface that has definitions to add or create an item / entity
-    /// </summary>
-    /// <typeparam name="TEntity">Entity type that has to be created</typeparam>
-    public interface IAddItemAsync<TEntity> where TEntity : class
-    {
-        /// <summary>
-        /// Adds a new item or entity
-        /// </summary>
-        /// <returns>Returns newly created entity or item</returns>
-        Task<TEntity> AddAsync();
-    }
-
-    /// <summary>
-    /// Interface that has definitions to add or create an item / entity
+    /// Interface that has definitions to add or create an item / entity async
     /// </summary>
     /// <typeparam name="TInput">Input entity type</typeparam>
     /// <typeparam name="TEntity">Entity type that has to be created</typeparam>
@@ -38,8 +26,24 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// Adds a new item or entity
         /// </summary>
         /// <param name="entity">Input entity object</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Returns newly created entity or item</returns>
-        Task<TEntity> AddAsync(TInput entity);
+        Task<TEntity> AddAsync(TInput entity, CancellationToken token = default(CancellationToken));
+    }
+
+    /// <summary>
+    /// Interface that has definitions to add or create an item / entity
+    /// </summary>
+    /// <typeparam name="TEntity">Entity type that has to be created</typeparam>
+    public interface IAddItemAsync<TEntity>
+        where TEntity : class
+    {
+        /// <summary>
+        /// Adds a new item or entity
+        /// </summary>
+        /// <param name="token">The cancellation token</param>
+        /// <returns>Returns newly created entity or item</returns>
+        Task<TEntity> AddAsync(CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -52,6 +56,6 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         ///  Add collection of items
         /// </summary>
         /// <param name="entities">Entity collection to be added</param>
-        Task AddRange(IEnumerable<TEntity> entities);
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
     }
 }

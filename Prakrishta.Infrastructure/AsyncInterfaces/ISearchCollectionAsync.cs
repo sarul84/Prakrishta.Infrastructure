@@ -10,6 +10,7 @@
 namespace Prakrishta.Infrastructure.AsyncInterfaces
 {
     using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -23,8 +24,9 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// Get all entities for the given filter criteria
         /// </summary>
         /// <param name="entity">Filter criteria</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Collection of entities</returns>
-        Task<ICollection<TEntity>> GetAllAsync(TEntity entity);
+        Task<ICollection<TEntity>> GetAllAsync(TEntity entity, CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -39,8 +41,9 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// Get all entities for the given filter criteria
         /// </summary>
         /// <param name="entity">Filter criteria</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Collection of entities</returns>
-        Task<ICollection<TEntity>> GetAllAsync(TIdentity id);
+        Task<ICollection<TEntity>> GetAllAsync(TIdentity id, CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -58,8 +61,9 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// </summary>
         /// <param name="id1">Filter criteria1</param>
         /// <param name="id2">Filter criteria2</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Collection of entities</returns>
-        Task<ICollection<TEntity>> GetAllAsync(TIdentity1 id1, TIdentity2 id2);
+        Task<ICollection<TEntity>> GetAllAsync(TIdentity1 id1, TIdentity2 id2, CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -69,6 +73,7 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
     /// <typeparam name="TIdentity1">Filter type</typeparam>
     /// <typeparam name="TIdentity2">Filter type</typeparam>
     /// <typeparam name="TIdentity3">Filter type</typeparam>
+    /// <param name="token">The cancellation token</param>
     /// <typeparam name="TEntity">Entity type that is going to be returned</typeparam>
     public interface ISearchCollectionAsync<in TIdentity1, in TIdentity2, in TIdentity3, TEntity>
     {
@@ -78,7 +83,8 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// <param name="id1">Filter criteria1</param>
         /// <param name="id2">Filter criteria2</param>
         /// <param name="id3">Filter criteria3</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Collection of entities</returns>
-        Task<ICollection<TEntity>> GetAllAsync(TIdentity1 id1, TIdentity2 id2, TIdentity3 id3);
+        Task<ICollection<TEntity>> GetAllAsync(TIdentity1 id1, TIdentity2 id2, TIdentity3 id3, CancellationToken token = default(CancellationToken));
     }
 }

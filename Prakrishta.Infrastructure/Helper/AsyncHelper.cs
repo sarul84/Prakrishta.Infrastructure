@@ -17,7 +17,7 @@ namespace Prakrishta.Infrastructure.Helper
     /// Asynchronous method execution helper class
     /// Thanks to Chris Pratt: https://cpratt.co/async-tips-tricks/
     /// </summary>
-    public class AsyncHelper
+    public sealed class AsyncHelper
     {
         /// <summary>
         /// Holds task factory object

@@ -7,13 +7,16 @@
 // <summary>Contract that defines methods to create an item</summary>
 //-----------------------------------------------------------------------------------
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Prakrishta.Infrastructure.GenericInterfaces
 {
     /// <summary>
     /// Interface that has definitions to add or create an item / entity
     /// </summary>
     /// <typeparam name="TEntity">Entity type that has to be created</typeparam>
-    public interface IAddItem<TEntity> where TEntity : class
+    public interface IAddItem<out TEntity> where TEntity : class
     {
         /// <summary>
         /// Adds a new item or entity
@@ -27,7 +30,7 @@ namespace Prakrishta.Infrastructure.GenericInterfaces
     /// </summary>
     /// <typeparam name="TInput">Input entity type</typeparam>
     /// <typeparam name="TEntity">Entity type that has to be created</typeparam>
-    public interface IAddItem<in TInput, TEntity> 
+    public interface IAddItem<in TInput, out TEntity> 
         where TEntity : class
         where TInput : class
     {
@@ -37,5 +40,5 @@ namespace Prakrishta.Infrastructure.GenericInterfaces
         /// <param name="entity">Input entity object</param>
         /// <returns>Returns newly created entity or item</returns>
         TEntity Add(TInput entity);
-    }
+    }    
 }

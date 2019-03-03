@@ -19,7 +19,7 @@ namespace Prakrishta.Infrastructure.Helper
     /// <summary>
     /// Enum helper class
     /// </summary>
-    public class EnumHelper
+    public sealed class EnumHelper
     {
         /// <summary>
         /// Define the enum description as follows and the specified description attribute is what will get returned from

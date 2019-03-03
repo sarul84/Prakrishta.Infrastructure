@@ -7,6 +7,7 @@
 // <summary>Contract that defines async method for searching and returning single record</summary>
 //-----------------------------------------------------------------------------------
 
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Prakrishta.Infrastructure.AsyncInterfaces
@@ -22,8 +23,9 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// Get record for the given filter criteria
         /// </summary>
         /// <param name="entity">Filter criteria</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Returns single record of the expected entity type</returns>
-        Task<TEntity> GetAsync(TEntity entity);
+        Task<TEntity> GetAsync(TEntity entity, CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -38,8 +40,9 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// Get record for the given id
         /// </summary>
         /// <param name="id">Filter condition</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Returns single record of the expected entity type</returns>
-        Task<TEntity> GetAsync(TIdentity id);
+        Task<TEntity> GetAsync(TIdentity id, CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -56,8 +59,9 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// </summary>
         /// <param name="id1">Filter condition1</param>
         /// <param name="id2">Filter condition2</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Returns single record of the expected entity type</returns>
-        Task<TEntity> GetAsync(TIdentity1 id1, TIdentity2 id2);
+        Task<TEntity> GetAsync(TIdentity1 id1, TIdentity2 id2, CancellationToken token = default(CancellationToken));
     }
 
     /// <summary>
@@ -76,7 +80,8 @@ namespace Prakrishta.Infrastructure.AsyncInterfaces
         /// <param name="id1">Filter condition1</param>
         /// <param name="id2">Filter condition2</param>
         /// <param name="id3">Filter condition2</param>
+        /// <param name="token">The cancellation token</param>
         /// <returns>Returns single record of the expected entity type</returns>
-        Task<TEntity> GetAsync(TIdentity1 id1, TIdentity2 id2, TIdentity3 id3);
+        Task<TEntity> GetAsync(TIdentity1 id1, TIdentity2 id2, TIdentity3 id3, CancellationToken token = default(CancellationToken));
     }
 }
