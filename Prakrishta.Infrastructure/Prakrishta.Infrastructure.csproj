@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Arul Sengottaiyan</Authors>
+    <Company>Prakrishta Technologies</Company>
+    <Description>Small generic interfaces and common utilities for building .net applications</Description>
+    <Copyright>©Prakrishta Technologies</Copyright>
+    <PackageProjectUrl>https://github.com/sarul84/Prakrishta.Infrastructure</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sarul84/Prakrishta.Infrastructure</RepositoryUrl>
+    <RepositoryType>Generic</RepositoryType>
+    <PackageTags>interface segregation principle, C#.Net, netstandard, Extensions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
