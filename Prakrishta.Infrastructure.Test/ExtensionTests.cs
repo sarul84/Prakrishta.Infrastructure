@@ -98,6 +98,24 @@ namespace Prakrishta.Infrastructure.Test
             //Assert
             Assert.AreEqual(4, userCollection.Count, "No items present");
         }
+
+        [TestMethod]
+        [DataRow("53210-5", false)]
+        [DataRow("53210-56", false)]
+        [DataRow("53210-563", false)]
+        [DataRow("53210-5564", true)]
+        [DataRow("53210-54321", false)]
+        [DataRow("53210-", false)]
+        [DataRow("53210", true)]
+        [DataRow("5321", false)]
+        public void ValidateUSZip(string zipCode, bool expectedResult)
+        {
+            //Act
+            var result = zipCode.IsValidUSAZip();
+
+            //Assert
+            Assert.AreEqual<bool>(expectedResult, result, "Not a valid zip code");
+        }
     }
 
     public class User

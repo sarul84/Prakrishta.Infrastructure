@@ -95,6 +95,40 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
+        /// Validate zip code if it satisfies the pattern (xxxxx-xxxx)
+        /// </summary>
+        /// <param name="zipCode">string zip code</param>
+        /// <returns>True if it matches the pattern otherwise false</returns>
+        public static bool IsValidUSAZip(this string zipCode)
+        {
+            string pattern = "^[0-9]{5}(?:-[0-9]{4})?$";
+            return Regex.Match(zipCode, pattern).Success;
+        }
+
+        /// <summary>
+        /// Validate zip code if it satisfies the pattern (xxxxxx)
+        /// </summary>
+        /// <param name="postalCode">string zip code</param>
+        /// <returns>True if it matches the pattern otherwise false</returns>
+        public static bool IsValidIndianPostalCode(this string postalCode)
+        {
+            string pattern = @"^\d{6}(-\d{4})?$";
+            return Regex.Match(postalCode, pattern).Success;
+        }
+
+        /// <summary>
+        /// Validate zip code if it satisfies the pattern
+        /// Canadian postal codes can't contain the letters D, F, I, O, Q, or U, and cannot start with W or Z
+        /// </summary>
+        /// <param name="postalCode">string zip code</param>
+        /// <returns>True if it matches the pattern otherwise false</returns>
+        public static bool IsValidCanadianPostalCode(this string postalCode)
+        {
+            string pattern = @"^([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ])\ {0,1}(\d[ABCEGHJKLMNPRSTVWXYZ]\d)$";
+            return Regex.Match(postalCode, pattern).Success;
+        }
+
+        /// <summary>
         /// Truncate the string for the given length
         /// </summary>
         /// <param name="input">string to be truncated</param>
