@@ -12,6 +12,8 @@ using Prakrishta.Infrastructure.Helper;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Prakrishta.Infrastructure.Extensions
@@ -238,5 +240,27 @@ namespace Prakrishta.Infrastructure.Extensions
             return val.Substring(val.Length - length);
         }
 
+        /// <summary>
+        /// Get only digits from string if anything
+        /// </summary>
+        /// <param name="value">The original string value</param>
+        /// <returns>The numeric value</returns>
+        public static string Digits(this string value)
+        {
+            return new string(value?.Where(c => char.IsDigit(c)).ToArray());
+        }
+
+        /// <summary>
+        /// Get has algorithm for the given input string
+        /// </summary>
+        /// <param name="input">The input string</param>
+        /// <returns>The encrypted string</returns>
+        public static string GetHashAlgorithm(this string input)
+        {
+            HashAlgorithm hashAlgorithm = new SHA256CryptoServiceProvider();
+            byte[] byteValue = Encoding.UTF8.GetBytes(input);
+            byte[] byteHash = hashAlgorithm.ComputeHash(byteValue);
+            return Convert.ToBase64String(byteHash);
+        }
     }
 }

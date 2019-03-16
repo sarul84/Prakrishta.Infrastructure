@@ -174,5 +174,16 @@ namespace Prakrishta.Infrastructure.Extensions
                 oldIndex = source.IndexOf(oldValue);
             }
         }
+
+        /// <summary>
+        /// Get random element from collection
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        /// <param name="source">The original source</param>
+        /// <returns>The random object</returns>
+        public static T GetRandElement<T>(this ICollection<T> source)
+        {
+            return source.ElementAt(new Random().Next(source.Count));
+        }
     }
 }

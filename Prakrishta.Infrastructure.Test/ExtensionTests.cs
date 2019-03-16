@@ -116,6 +116,27 @@ namespace Prakrishta.Infrastructure.Test
             //Assert
             Assert.AreEqual<bool>(expectedResult, result, "Not a valid zip code");
         }
+
+        [TestMethod]
+        public void JoinStringTest()
+        {
+            //Arrange
+            var list = new Collection<string>
+            {
+                "Test",
+                "Void",
+                "Zip",
+                "Class"
+            };
+
+            var delimit = "Test,Void,Zip,Class";
+
+            //Act
+            var delimit1 = list.Join<string>(itemOutput: null);
+
+            //Assert
+            Assert.AreEqual<string>(delimit, delimit1);
+        }
     }
 
     public class User

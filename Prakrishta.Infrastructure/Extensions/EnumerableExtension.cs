@@ -11,6 +11,8 @@ namespace Prakrishta.Infrastructure.Extensions
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Data;
     using System.Linq;
 
     public static class EnumerableExtension
@@ -102,6 +104,62 @@ namespace Prakrishta.Infrastructure.Extensions
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
         {
             return (source == null || source?.Count() == 0);
+        }
+
+        /// <summary>
+        /// Converts List<string>() and make a delimited string
+        /// </summary>
+        /// <typeparam name="T">The generic type</typeparam>
+        /// <param name="source">The original collection</param>
+        /// <param name="itemOutput">The output filter expression</param>
+        /// <param name="separator">The separator string</param>
+        /// <returns>Delimited string</returns>
+        public static string Join<T>(this IEnumerable<T> source, Func<T, string> itemOutput = null, string separator = ",")
+        {
+            itemOutput = itemOutput ?? (x => x.ToString());
+            return string.Join(separator, source.Select(itemOutput).ToArray());
+        }
+
+        /// <summary>
+        /// Converts Enumerable collection to hashset type
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        /// <param name="source">The original collection source</param>
+        /// <returns>The converted hashset object</returns>
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
+        {
+            return new HashSet<T>(source);
+        }
+
+        /// <summary>
+        /// Convert collection to data table object
+        /// </summary>
+        /// <typeparam name="TEntity">The generic entity type</typeparam>
+        /// <param name="source">The original collection</param>
+        /// <returns>The data table object</returns>
+        public static DataTable ToDataTable<TEntity>(this IEnumerable<TEntity> source)
+        {
+            var result = new DataTable();
+
+            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(TEntity));
+            
+            foreach (PropertyDescriptor prop in properties)
+            {
+                result.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            }
+
+            foreach (TEntity item in source)
+            {
+                DataRow row = result.NewRow();
+                foreach (PropertyDescriptor prop in properties)
+                {
+                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                }
+
+                result.Rows.Add(row);
+            }           
+
+            return result;
         }
     }
 }

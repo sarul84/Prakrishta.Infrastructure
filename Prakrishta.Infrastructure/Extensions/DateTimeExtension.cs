@@ -138,5 +138,32 @@ namespace Prakrishta.Infrastructure.Extensions
         {
             return new DateTime(current.Year, current.Month, current.Day, hour, minute, second, millisecond);
         }
+
+        /// <summary>
+        /// This extension method places a 'th', 'st', 'nd', 'rd', or 'th' to the end of the number.
+        /// Credits: https://dzone.com/articles/5-more-c-extension-methods-for-the-stocking-plus-a
+        /// </summary>
+        /// <param name="datetime">The date time object</param>
+        /// <returns>Modified string</returns>
+        public static string OrdinalSuffix(this DateTime datetime)
+        {
+            int day = datetime.Day;
+            if (day % 100 >= 11 && day % 100 <= 13)
+            {
+                return string.Concat(day, "th");
+            }
+
+            switch (day % 10)
+            {
+                case 1:
+                    return string.Concat(day, "st");
+                case 2:
+                    return string.Concat(day, "nd");
+                case 3:
+                    return string.Concat(day, "rd");
+                default:
+                    return string.Concat(day, "th");
+            }
+        }
     }
 }

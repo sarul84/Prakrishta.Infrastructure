@@ -9,7 +9,9 @@
 
 namespace Prakrishta.Infrastructure.Extensions
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public static class ListExtensions
     {
@@ -38,5 +40,23 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="source">The collection source</param>
         /// <returns>The new empty collection</returns>
         public static IList<T> Empty<T>(this IList<T> source) => new List<T>();
+
+        /// <summary>
+        /// Gets index of item in collection
+        /// </summary>
+        /// <typeparam name="T">The generic type</typeparam>
+        /// <param name="source">The collection source</param>
+        /// <param name="predicate">The filter condition</param>
+        /// <returns>The index of collection</returns>
+        public static int IndexOf<T>(this IList<T> source, Func<T, bool> predicate)
+        {
+            var index = 0;
+            if (source == null) return index;
+
+            var item = source.SingleOrDefault(predicate);
+            if (item != null) index = source.IndexOf(item);
+
+            return index;
+        }
     }
 }

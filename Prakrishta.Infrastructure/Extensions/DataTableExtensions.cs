@@ -23,41 +23,18 @@ namespace Prakrishta.Infrastructure.Extensions
     public static class DataTableExtensions
     {
         /// <summary>
-        /// Converts each data row to typed entity
+        /// Converts each data row in Data Table to typed entity
         /// </summary>
         /// <typeparam name="TEntity">The generic entity type parameter</typeparam>
         /// <param name="data">The datatable data</param>
         /// <returns>The converted typed entity collection</returns>
         public static IEnumerable<TEntity> ToEntities<TEntity>(this DataTable data) where TEntity : class, new()
         {
-            Type type = typeof(TEntity);
-            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-
             var list = new Collection<TEntity>();
 
             foreach (DataRow dr in data.Rows)
             {
-                var entity = new TEntity();
-
-                foreach (PropertyInfo property in properties)
-                {
-                    if (data.Columns.Contains(property.Name))
-                    {
-                        Type valueType = property.PropertyType;
-                        property.SetValue(entity, dr[property.Name].To(valueType), null);
-                    }
-                }
-
-                foreach (FieldInfo field in fields)
-                {
-                    if (data.Columns.Contains(field.Name))
-                    {
-                        Type valueType = field.FieldType;
-                        field.SetValue(entity, dr[field.Name].To(valueType));
-                    }
-                }
-
+                TEntity entity = dr.ToEntity<TEntity>();
                 list.Add(entity);
             }
 
