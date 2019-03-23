@@ -47,7 +47,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>True if collection is empty otherwise false</returns>
         public static bool IsEmpty<T>(this ICollection<T> source)
         {
-            return source?.Count == 0;
+            return source?.Any() == false;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>True if collection is empty or null otherwise false</returns>
         public static bool IsNullOrEmpty<T>(this ICollection<T> source)
         {
-            return (source == null || source?.Count == 0);
+            return (source == null || source?.Any() == false);
         }
 
         /// <summary>

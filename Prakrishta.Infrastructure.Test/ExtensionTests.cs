@@ -3,6 +3,8 @@ using Prakrishta.Infrastructure.Extensions;
 using Prakrishta.Infrastructure.Helper;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Linq;
 
 namespace Prakrishta.Infrastructure.Test
 {
@@ -136,6 +138,36 @@ namespace Prakrishta.Infrastructure.Test
 
             //Assert
             Assert.AreEqual<string>(delimit, delimit1);
+        }
+
+        [TestMethod]
+        public void DataTableToEntityTest()
+        {
+            //Arrange
+            DataTable dataTable = new DataTable("Users");
+            dataTable.Columns.Add(new DataColumn("FirstName"));
+            dataTable.Columns.Add(new DataColumn("LastName"));
+
+            var row = dataTable.NewRow();
+            row["FirstName"] = "Arul";
+            row["LastName"] = "Sengottaiyan";
+            dataTable.Rows.Add(row);
+
+            row = dataTable.NewRow();
+            row["FirstName"] = "Prakrishta";
+            row["LastName"] = "Technologies";
+            dataTable.Rows.Add(row);
+
+            row = dataTable.NewRow();
+            row["FirstName"] = "Microsoft";
+            row["LastName"] = "Technologies";
+            dataTable.Rows.Add(row);
+
+            //Act
+            var users = dataTable.ToEntities<User>();
+
+            //Assert
+            Assert.IsTrue(users.Count() == 3, "No data conversion");
         }
     }
 

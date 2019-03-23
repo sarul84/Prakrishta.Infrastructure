@@ -30,6 +30,20 @@ namespace Prakrishta.Infrastructure.Extensions
             PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
+            return row.ToEntity<TEntity>(properties, fields);
+        }
+
+        /// <summary>
+        /// Converts each data row to typed entity
+        /// </summary>
+        /// <typeparam name="TEntity">The generic entity type parameter</typeparam>
+        /// <param name="row">The data row object</param>
+        /// <param name="properties">The properties list</param>
+        /// <param name="fields">The fields list</param>
+        /// <returns>The converted typed entity</returns>
+        public static TEntity ToEntity<TEntity>(this DataRow row, PropertyInfo[] properties, 
+            FieldInfo[] fields) where TEntity : class, new()
+        {
             var entity = new TEntity();
 
             foreach (PropertyInfo property in properties)

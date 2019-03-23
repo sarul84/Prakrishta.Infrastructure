@@ -30,11 +30,15 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>The converted typed entity collection</returns>
         public static IEnumerable<TEntity> ToEntities<TEntity>(this DataTable data) where TEntity : class, new()
         {
+            Type type = typeof(TEntity);
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+
             var list = new Collection<TEntity>();
 
             foreach (DataRow dr in data.Rows)
             {
-                TEntity entity = dr.ToEntity<TEntity>();
+                TEntity entity = dr.ToEntity<TEntity>(properties, fields);
                 list.Add(entity);
             }
 

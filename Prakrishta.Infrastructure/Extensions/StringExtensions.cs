@@ -44,7 +44,7 @@ namespace Prakrishta.Infrastructure.Extensions
         public static string ToTitleCase(this string inputString) => CultureInfo.InvariantCulture?.TextInfo?.ToTitleCase(inputString.ToLower());
 
         /// <summary>
-        ///     Converts string to its boolean equivalent
+        /// Converts string to its boolean equivalent
         /// </summary>
         /// <param name="value">string to convert</param>
         /// <returns>boolean equivalent</returns>
@@ -152,8 +152,8 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
-        ///     Converts a Json string to object of type T method applicable for multi hierarchy objects i.e
-        ///     having zero or many parent child relationships, Ignore loop references and do not serialize if cycles are detected.
+        /// Converts a Json string to object of type T method applicable for multi hierarchy objects i.e
+        /// having zero or many parent child relationships, Ignore loop references and do not serialize if cycles are detected.
         /// </summary>
         /// <typeparam name="T">object to convert to</typeparam>
         /// <param name="json">json</param>
@@ -165,8 +165,8 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
-        ///     Checks if the String contains only Unicode letters, digits.
-        ///     null will return false. An empty String ("") will return false.
+        /// Checks if the String contains only Unicode letters, digits. null will return false. 
+        /// An empty String ("") will return false.
         /// </summary>
         /// <param name="val">string to check if is Alpha or Numeric</param>
         /// <returns></returns>
@@ -180,8 +180,8 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
-        ///     Validates if a string is valid IPv4
-        ///     Regular expression taken from <a href="http://regexlib.com/REDetails.aspx?regexp_id=2035">Regex reference</a>
+        ///  Validates if a string is valid IPv4
+        ///  Regular expression taken from <a href="http://regexlib.com/REDetails.aspx?regexp_id=2035">Regex reference</a>
         /// </summary>
         /// <param name="val">string IP address</param>
         /// <returns>true if string matches valid IP address else false</returns>
@@ -197,7 +197,7 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
-        ///     Extracts the left part of the input string limited with the length parameter
+        /// Extracts the left part of the input string limited with the length parameter
         /// </summary>
         /// <param name="val">The input string to take the left part from</param>
         /// <param name="length">The total number characters to take from the input string</param>
@@ -219,7 +219,7 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
-        ///     Extracts the right part of the input string limited with the length parameter
+        /// Extracts the right part of the input string limited with the length parameter
         /// </summary>
         /// <param name="val">The input string to take the right part from</param>
         /// <param name="length">The total number characters to take from the input string</param>

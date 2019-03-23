@@ -11,6 +11,7 @@ namespace Prakrishta.Infrastructure.Extensions
 {
     using System.IO;
     using System.Net;
+    using System.Threading.Tasks;
 
     public static class WebResponseExtensions
     {
@@ -27,6 +28,22 @@ namespace Prakrishta.Infrastructure.Extensions
                 using (var reader = new StreamReader(stream))
                 {
                     return reader.ReadToEnd();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets response from webresponse using streams
+        /// </summary>
+        /// <param name="this">The original web response</param>
+        /// <returns>The response string</returns>
+        public static async Task<string> ReadToEndAsync(this WebResponse source)
+        {
+            using (Stream stream = source.GetResponseStream())
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    return await reader.ReadToEndAsync();
                 }
             }
         }

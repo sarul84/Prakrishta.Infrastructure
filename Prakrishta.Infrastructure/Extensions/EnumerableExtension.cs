@@ -92,7 +92,20 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>True if collection is empty otherwise false</returns>
         public static bool IsEmpty<T>(this IEnumerable<T> source)
         {
-            return source?.Count() == 0;
+            return source?.Any() == false;
+        }
+
+        /// <summary>
+        /// Check if the collection is empty or not
+        /// </summary>
+        /// <typeparam name="T">The generic type</typeparam>
+        /// <param name="source">The original collection</param>
+        /// <param name="predicate">The filter condition</param>
+        /// <returns>True if collection is empty otherwise false</returns>
+        public static bool IsEmpty<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            predicate = predicate ?? (x => true);
+            return source?.Any(predicate) == false;
         }
 
         /// <summary>
@@ -103,7 +116,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>True if collection is empty or null otherwise false</returns>
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
         {
-            return (source == null || source?.Count() == 0);
+            return (source == null || source?.Any() == false);
         }
 
         /// <summary>
