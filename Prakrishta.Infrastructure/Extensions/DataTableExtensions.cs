@@ -79,7 +79,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>Data table that has different records</returns>
         public static DataTable GetDataDifference(this DataTable data1, DataTable data2)
         {
-            if(!data1.IsSchemaEquals(data2))
+            if (!data1.IsSchemaEquals(data2))
             {
                 throw new Exception("The schema of two tables is not matching");
             }

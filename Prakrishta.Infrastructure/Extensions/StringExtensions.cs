@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Prakrishta.Infrastructure.Helper;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -30,7 +31,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="value">string value</param>
         /// <param name="ignoreCase">indicates if case insenstive</param>
         /// <returns>Enum value</returns>
-        public static TEnum ToEnum<TEnum>(this string value, bool ignoreCase = false) 
+        public static TEnum ToEnum<TEnum>(this string value, bool ignoreCase = false)
             where TEnum : struct
         {
             return EnumHelper.Parse<TEnum>(value, ignoreCase);
@@ -261,6 +262,34 @@ namespace Prakrishta.Infrastructure.Extensions
             byte[] byteValue = Encoding.UTF8.GetBytes(input);
             byte[] byteHash = hashAlgorithm.ComputeHash(byteValue);
             return Convert.ToBase64String(byteHash);
+        }
+
+        /// <summary>
+        /// Compare check sum of the downloaded update file with the algorithm and check sum given
+        /// </summary>
+        /// <param name="checksum">The check sum value</param>
+        /// <param name="hashingAlgorithm">The algorithm type</param>
+        /// <param name="fileName">The file name that has be to validated</param>
+        /// <returns>Returns true if it matches otherwise false</returns>
+        public static bool IsValidChecksum(this string checksum, string hashingAlgorithm, string fileName)
+        {
+            using (var hashAlgorithm = HashAlgorithm.Create(hashingAlgorithm))
+            {
+                using (var stream = File.OpenRead(fileName))
+                {
+                    if (hashAlgorithm != null)
+                    {
+                        var hash = hashAlgorithm.ComputeHash(stream);
+                        var fileChecksum = BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant();
+
+                        if (fileChecksum == checksum.ToLower())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }
