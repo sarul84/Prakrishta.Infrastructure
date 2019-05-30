@@ -16,6 +16,7 @@ Interfaces:
 6. ISearchCollection
 7. ISearchSingle
 8. IUpdateItem
+9. IDynamicResolver<TInterface, TArg>
 
 Helper classes:
 1. Async Helper => to run async method synchronously with out any deadlock
@@ -23,6 +24,7 @@ Helper classes:
 3. DelegateComparer
 4. PropertyComparer
 5. DateFormatConverter => to convert date to specific format while deserializing with NewtonJson
+6. TypedClientResolver => to resolve named typed http client
 
 Extensions:
 1. DateTime
