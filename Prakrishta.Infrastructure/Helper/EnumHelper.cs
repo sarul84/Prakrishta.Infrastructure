@@ -196,7 +196,7 @@ namespace Prakrishta.Infrastructure.Helper
         {
             if (!typeof(TEnum).IsEnum)
             {
-                throw new ArgumentException("TEnum must be an enum type.");
+                throw new ArgumentException($"{typeof(TEnum).Name} must be an enum type.");
             }
 
             var result = (TEnum)Enum.Parse(typeof(TEnum), value, ignoreCase);
