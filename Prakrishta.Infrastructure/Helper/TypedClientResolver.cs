@@ -20,15 +20,21 @@ namespace Prakrishta.Infrastructure.Helper
     /// <typeparam name="TInterface">The generic typed client type parameter</typeparam>
     public class TypedClientResolver<TInterface> : IDynamicResolver<TInterface, string>
     {
-        /// <summary>
-        /// Defines the typedClient factory
-        /// </summary>
-        private readonly ITypedHttpClientFactory<TInterface> typedClient;
+        #region |Private Fields|
 
         /// <summary>
         /// Defines the http client factory
         /// </summary>
         private readonly IHttpClientFactory factory;
+
+        /// <summary>
+        /// Defines the typedClient factory
+        /// </summary>
+        private readonly ITypedHttpClientFactory<TInterface> typedClient;
+
+        #endregion
+
+        #region |Constructors|
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedClientResolver{TInterface}"/> class.
@@ -41,6 +47,10 @@ namespace Prakrishta.Infrastructure.Helper
             this.factory = factory ?? throw new ArgumentNullException("Unable to resolve http client factory, please make sure it is configured with service");
         }
 
+        #endregion
+
+        #region |Methods|
+
         /// <summary>
         /// Method to get the resolved service by key
         /// </summary>
@@ -51,5 +61,7 @@ namespace Prakrishta.Infrastructure.Helper
             var httpClient = this.factory.CreateClient(key);
             return this.typedClient.CreateClient(httpClient);
         }
+
+        #endregion
     }
 }

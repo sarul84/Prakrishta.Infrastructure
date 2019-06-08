@@ -19,11 +19,17 @@ namespace Prakrishta.Infrastructure.Helper
     /// </summary>
     public sealed class AsyncHelper
     {
+        #region |Private Fields|
+
         /// <summary>
         /// Holds task factory object
         /// </summary>
         private static readonly TaskFactory taskFactory = new TaskFactory(CancellationToken.None,
                     TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
+
+        #endregion
+
+        #region |Methods|
 
         /// <summary>
         /// Execute's an async Task<TResult> method which has a TResult return type synchronously
@@ -38,7 +44,7 @@ namespace Prakrishta.Infrastructure.Helper
                 .GetResult();
 
         /// <summary>
-        ///  Execute's an async Task<TResult> method which has a void return value synchronously
+        /// Execute's an async Task<TResult> method which has a void return value synchronously
         /// </summary>
         /// <param name="func">Task method to execute</param>
         public static void RunSync(Func<Task> func)
@@ -46,5 +52,7 @@ namespace Prakrishta.Infrastructure.Helper
                 .Unwrap()
                 .GetAwaiter()
                 .GetResult();
+
+        #endregion
     }
 }

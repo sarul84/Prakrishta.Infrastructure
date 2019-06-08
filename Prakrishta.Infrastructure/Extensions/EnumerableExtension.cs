@@ -11,6 +11,7 @@ namespace Prakrishta.Infrastructure.Extensions
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data;
     using System.Linq;
@@ -142,6 +143,17 @@ namespace Prakrishta.Infrastructure.Extensions
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
         {
             return new HashSet<T>(source);
+        }
+
+        /// <summary>
+        /// Converts Enumerable collection to observable collection type
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        /// <param name="source">The original collection source</param>
+        /// <returns>The converted ObservableCollection object</returns>
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
+        {
+            return new ObservableCollection<T>(source);
         }
 
         /// <summary>
