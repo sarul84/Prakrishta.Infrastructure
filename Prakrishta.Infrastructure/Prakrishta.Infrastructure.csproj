@@ -10,6 +10,7 @@
     <RepositoryUrl>https://github.com/sarul84/Prakrishta.Infrastructure</RepositoryUrl>
     <RepositoryType>Generic</RepositoryType>
     <PackageTags>interface segregation principle, C#.Net, netstandard, Extensions</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
