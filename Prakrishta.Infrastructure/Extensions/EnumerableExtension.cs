@@ -9,6 +9,7 @@
 
 namespace Prakrishta.Infrastructure.Extensions
 {
+    using Prakrishta.Infrastructure.Helper;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -185,6 +186,19 @@ namespace Prakrishta.Infrastructure.Extensions
             }           
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns distinct elements from a sequence by using a auto comparer to compare values.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of source.</typeparam>
+        /// <param name="source">The sequence to remove duplicate elements from.</param>
+        /// <param name="projection">The predicator object</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> that contains distinct elements from
+        /// the source sequence</returns>
+        public static IEnumerable<T> DistinctBy<T>(this IEnumerable<T> source, Func<T, object> projection)
+        {
+            return source.Distinct(new AutoComparer<T, object>(projection));
         }
     }
 }

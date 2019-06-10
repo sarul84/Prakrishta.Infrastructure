@@ -49,12 +49,110 @@ namespace Prakrishta.Infrastructure.Test
             //Act
             var found = userCollection.ContainsAny<User>(new DelegateComparer<User>(
                 (source, target) => source.FirstName == target.FirstName && source.LastName == target.LastName,
-                x => x.FirstName.GetHashCode()), 
-                new User { FirstName = "Microsoft", LastName = "Technologies" }, 
+                x => x.FirstName.GetHashCode()),
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
                 new User { FirstName = "Oracle", LastName = "Systems" });
 
             //Assert
             Assert.IsTrue(found, "No items present");
+        }
+
+        [TestMethod]
+        public void CollectionContainsAnyTest3()
+        {
+            //Arrange
+            var userCollection = new Collection<User>
+            {
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User {FirstName = "Prakrishta", LastName = "Technologies" },
+                new User {FirstName ="Microsoft", LastName ="Technologies" },
+                new User {FirstName = "Oracle", LastName = "Systems" },
+                new User {FirstName = "Extensions", LastName = "Methods" }
+            };
+
+            //Act
+            var found = userCollection.ContainsAny<User>(new AutoComparer<User, object>(
+                x => new { x.FirstName, x.LastName }),
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Oracle", LastName = "Systems" });
+
+            //Assert
+            Assert.IsTrue(found, "No items present");
+        }
+
+        [TestMethod]
+        public void CollectionDistinctTest()
+        {
+            //Arrange
+            var userCollection = new Collection<User>
+            {
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Arul" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Microsoft" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Microsoft" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Arul" }
+            };
+
+            //Act
+            var distinctRecords = userCollection.DistinctBy<User>(x => new { x.FirstName, x.LastName });
+
+            //Assert
+            Assert.IsTrue(distinctRecords.Count() == 6, "No items present");
+        }
+
+        [TestMethod]
+        public void CollectionDistinctWithReflectionTest()
+        {
+            //Arrange
+            var userCollection = new Collection<User>
+            {
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" },
+                new User { FirstName = "Arul", LastName = "Sengottaiyan" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName ="Microsoft", LastName ="Technologies" },
+                new User { FirstName = "Prakrishta", LastName = "Technologies" },
+                new User { FirstName = "Microsoft", LastName = "Technologies" }
+            };
+
+            //Act
+            var distinctRecords = userCollection.DistinctBy<User>("FirstName");
+
+            //Assert
+            Assert.IsTrue(distinctRecords.Count() == 3, "No items present");
         }
 
         [TestMethod]
@@ -93,7 +191,7 @@ namespace Prakrishta.Infrastructure.Test
                 new User {FirstName = "Extensions", LastName = "Methods" },
                 new User {FirstName = "Extensions", LastName = "Methods" }
             };
-            
+
             //Act
             userCollection.Remove(x => x.FirstName == "Extensions");
 

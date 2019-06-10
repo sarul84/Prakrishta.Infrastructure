@@ -29,7 +29,8 @@ namespace Prakrishta.Infrastructure.Test
 
             serviceCollection.AddHttpClient("test");
             serviceCollection.AddHttpClient("test1");
-            serviceCollection.AddScoped<TypedClientResolver<HttpTypedClient>>();
+            serviceCollection.AddScoped<IHttpTypedClient, HttpTypedClient>();
+            serviceCollection.AddSingleton<TypedClientResolver<HttpTypedClient>>();
 
             var services = serviceCollection.BuildServiceProvider();
 

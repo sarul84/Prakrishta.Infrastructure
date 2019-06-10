@@ -23,9 +23,9 @@ namespace Prakrishta.Infrastructure.Helper
     {
         #region |Private fields|
         /// <summary>
-        /// Holds property info object
+        /// Holds getter method delegate object
         /// </summary>
-        private readonly PropertyInfo propertyInfo;
+        private readonly Func<T, object> getter;
         #endregion
 
         #region |Constructor|
@@ -35,15 +35,17 @@ namespace Prakrishta.Infrastructure.Helper
         /// <param name="propertyName">The name of the property on type T 
         /// to perform the comparison on.</param>
         public PropertyComparer(string propertyName)
-        {
-            
-            this.propertyInfo = typeof(T).GetProperty(propertyName,
-                                    BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
+        {            
+            var propertyInfo = typeof(T).GetProperty(propertyName,
+                                    BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);            
 
-            if (this.propertyInfo == null)
+            if (propertyInfo == null)
             {
                 throw new ArgumentException($"{propertyName} is not a property of type {typeof(T)}.");
             }
+
+           getter = (Func<T, object>)Delegate.CreateDelegate(
+               typeof(Func<T, object>), null, propertyInfo.GetGetMethod());
         }
         #endregion
 
@@ -51,8 +53,8 @@ namespace Prakrishta.Infrastructure.Helper
         /// <inheritdoc />
         public bool Equals(T x, T y)
         {
-            object xValue = this.propertyInfo.GetValue(x, null);
-            object yValue = this.propertyInfo.GetValue(y, null);
+            object xValue = this.getter(x);
+            object yValue = this.getter(y);
 
             if (xValue == null)
             {
@@ -65,7 +67,7 @@ namespace Prakrishta.Infrastructure.Helper
         /// <inheritdoc />
         public int GetHashCode(T obj)
         {
-            object propertyValue = this.propertyInfo.GetValue(obj, null);
+            object propertyValue = this.getter(obj);
 
             if (propertyValue == null)
             {
