@@ -65,24 +65,59 @@ namespace Prakrishta.Infrastructure.Extensions
             switch (val)
             {
                 case "false":
-                    return false;
                 case "f":
-                    return false;
-                case "true":
-                    return true;
-                case "t":
-                    return true;
-                case "yes":
-                    return true;
                 case "no":
-                    return false;
-                case "y":
-                    return true;
                 case "n":
-                    return false;
+                case "0":
+                    return false;               
+                case "true":
+                case "t":
+                case "yes":
+                case "y":
+                case "1":
+                    return true;                
                 default:
                     throw new ArgumentException("Invalid boolean");
             }
+        }
+        
+        public static bool? ToNullableBoolean(this string value)
+        {
+            value = value.NullableTrim();
+            
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+            
+            string val = value.ToLower().Trim();
+            switch (val)
+            {
+                case "false":
+                case "f":
+                case "no":
+                case "n":
+                case "0":
+                    return false;               
+                case "true":
+                case "t":
+                case "yes":
+                case "y":
+                case "1":
+                    return true;                
+                default:
+                    return null;
+            }
+        }
+        
+        public static string NullableTrim(this string value)
+        {
+            if(!string.IsNullOrEmpty(value))
+            {
+                return value.Trim();
+            }
+            
+            return value;
         }
 
         /// <summary>
@@ -290,6 +325,22 @@ namespace Prakrishta.Infrastructure.Extensions
                 }
             }
             return false;
+        }
+        
+        public static Nullable<T> ToNullable<T>(this string value) where T : struct
+        {
+            Nullable<T> result = new Nullable<T>();
+            try
+            {
+                if(!string.IsNullOrEmpty(value) && value.Trim().Length > 0)
+                {
+                    TypeConverter conv = TypeDescriptor.GetConverter(typeof(T));
+                    result = (T)conv.ConvertFrom(value.Trim());
+                }
+            }
+            catch { }
+            
+            return result;
         }
     }
 }
