@@ -422,5 +422,15 @@ namespace Prakrishta.Infrastructure.Extensions
             
             return color;
         }
+        
+        public static string ReturnAlphaNumerics(this string value)
+        {
+            if(value == null) 
+            {
+                return value;
+            }
+            
+            return Regex.Replace(value, "[^a-z0-9]", string.Empty, RegexOptions.IgnoreCase);
+        }
     }
 }
