@@ -7,18 +7,19 @@
 // <summary>Extension method for string type</summary>
 //-----------------------------------------------------------------------------------
 
-using Newtonsoft.Json;
-using Prakrishta.Infrastructure.Helper;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-
 namespace Prakrishta.Infrastructure.Extensions
 {
+    using Newtonsoft.Json;
+    using Prakrishta.Infrastructure.Helper;
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Drawing;
+    
     /// <summary>
     /// Class that has extension methods for string type
     /// </summary>
@@ -341,6 +342,85 @@ namespace Prakrishta.Infrastructure.Extensions
             catch { }
             
             return result;
+        }
+        
+        public static bool IsGuid(this string value)
+        {
+            if(!string.IsNullOrEmpty(value))
+            {
+                return Regex.Match(value,
+                "^[A-Fa-f0-9]{32}$|" +
+                "^({|\\()?[A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}(}|\\))?$|" +
+                "^({)?[0xA-Fa-f0-9]{3,10}(, {0,1}[0xA-Fa-f0-9]{3,6}){2}, {0,1}({)([0xA-Fa-f0-9]{3,4}, {0,1}){7}[0xA-Fa-f0-9]{3,4}(}})$").Success;
+            }
+            
+            return false;
+        }
+        
+        public static string ReturnNumericals(this string value)
+        {
+            if(value == null) 
+            {
+                return value;
+            }
+            
+            return Regex.Replace(value, "[^0-9]", string.Empty);
+        }
+        
+        public static string ReturnNumericals(this string value, bool allowDot)
+        {
+            if(!allowDot)
+            {
+                return ReturnNumericals(value);
+            }
+            else
+            {
+                return Regex.Replace(value, "[^0-9|^.]", string.Empty);
+            }
+        }
+        
+        public static string ReturnNumericals(this string value, bool allowDot, bool allowComma)
+        {
+            if(!allowDot && !allowComma)
+            {
+                return ReturnNumericals(value);
+            }
+            else if(allowDot && !allowComma)
+            {
+                return ReturnNumericals(value, true);
+            }
+            else if(!allowDot && allowComma)
+            {
+                return Regex.Replace(value, "[^0-9|^,]", string.Empty);
+            }
+            else
+            {
+                return Regex.Replace(value, "[^0-9|^.|^,]", string.Empty);
+            }
+        }
+        
+        public static Color ToColor(this string argb)
+        {
+            Color color = new Color();
+            if(!string.IsNullOrEmpty(argb))
+            {
+                argb = argb.Replace("#", string.Empty);
+                byte a = System.Convert.ToByte("ff", 16);
+                byte pos = 0;
+                if (argb.Length == 8)
+                {
+                    a = System.Convert.ToByte(argb.Substring(pos, 2), 16);
+                    pos = 2;
+                }
+                byte r = System.Convert.ToByte(argb.Substring(pos, 2), 16);
+                pos += 2;
+                byte g = System.Convert.ToByte(argb.Substring(pos, 2), 16);
+                pos += 2;
+                byte b = System.Convert.ToByte(argb.Substring(pos, 2), 16);
+                color = System.Drawing.Color.FromArgb(a, r, g, b);
+            }
+            
+            return color;
         }
     }
 }
