@@ -11,11 +11,9 @@ namespace Prakrishta.Infrastructure.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Reflection;
-    using Microsoft.Extensions.DependencyInjection; 
-    
+
     /// <summary>
     /// Defines the <see cref="ServiceCollectionExtensions" /> class
     /// </summary>

@@ -11,6 +11,7 @@ namespace Prakrishta.Infrastructure.Extensions
 {
     using System;
     using System.Data;
+    using System.Linq;
     using System.Reflection;
 
     /// <summary>
@@ -18,6 +19,57 @@ namespace Prakrishta.Infrastructure.Extensions
     /// </summary>
     public static class DataRowExtensions
     {
+        #region |Methods|
+
+        /// <summary>
+        /// The method to get value from data colum of the specific row
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        /// <param name="row">The data row object</param>
+        /// <param name="columnIndex">The columnIndex</param>
+        /// <param name="defaultValue">The defaultValue for the type if no value found</param>
+        /// <returns>The value of the <see cref="T"/></returns>
+        public static T GetValue<T>(this DataRow row, int columnIndex, T defaultValue = default(T))
+        {
+            T result = defaultValue;
+            if (row != null && columnIndex >= 0 && columnIndex < row.ItemArray.Count())
+            {
+                if (!row.IsNull(columnIndex))
+                {
+                    object value = row[columnIndex];
+                    result = value.GetValue(defaultValue);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// The method to get value from data colum of the specific row
+        /// </summary>
+        /// <typeparam name="T">The generic type parameter</typeparam>
+        /// <param name="row">The data row object</param>
+        /// <param name="columnName">The column name</param>
+        /// <param name="defaultValue">The defaultValue for the type if no value found</param>
+        /// <returns>The value of the <see cref="T"/></returns>
+        public static T GetValue<T>(this DataRow row, string columnName, T defaultValue = default(T))
+        {
+            T result = defaultValue;
+            if (row != null && !string.IsNullOrEmpty(columnName))
+            {
+                if (row.Table.Columns.Contains(columnName))
+                {
+                    if (!row.IsNull(columnName))
+                    {
+                        object value = row[columnName];
+                        result = value.GetValue(defaultValue);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Converts each data row to typed entity
         /// </summary>
@@ -41,7 +93,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="properties">The properties list</param>
         /// <param name="fields">The fields list</param>
         /// <returns>The converted typed entity</returns>
-        public static TEntity ToEntity<TEntity>(this DataRow row, PropertyInfo[] properties, 
+        public static TEntity ToEntity<TEntity>(this DataRow row, PropertyInfo[] properties,
             FieldInfo[] fields) where TEntity : class, new()
         {
             var entity = new TEntity();
@@ -66,5 +118,7 @@ namespace Prakrishta.Infrastructure.Extensions
 
             return entity;
         }
+
+        #endregion
     }
 }

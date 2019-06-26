@@ -10,11 +10,9 @@
 namespace Prakrishta.Infrastructure.Extensions
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Microsoft.Extensions.DependencyInjection;
-    
+
     /// <summary>
     /// Defines the <see cref="ServiceCollectionExtensions" /> class
     /// </summary>
@@ -51,7 +49,7 @@ namespace Prakrishta.Infrastructure.Extensions
         {
             assembly.GetTypesAssignableTo(compareType).ForEach((type) =>
             {
-                foreach (var implementedInterface in type.ImplementedInterfaces)
+                type.ImplementedInterfaces.ForEach(implementedInterface =>
                 {
                     switch (lifetime)
                     {
@@ -65,7 +63,7 @@ namespace Prakrishta.Infrastructure.Extensions
                             services.AddTransient(implementedInterface, type);
                             break;
                     }
-                }
+                });
             });
         }
 
@@ -92,10 +90,10 @@ namespace Prakrishta.Infrastructure.Extensions
         {
             assembly.GetTypesAssignableTo(compareType).ForEach((type) =>
             {
-                foreach (var implementedInterface in type.ImplementedInterfaces)
+                type.ImplementedInterfaces.ForEach(implementedInterface =>
                 {
                     action(implementedInterface, type);
-                }
+                });
             });
         }
     }

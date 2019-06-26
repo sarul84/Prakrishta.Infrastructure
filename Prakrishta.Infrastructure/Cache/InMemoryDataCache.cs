@@ -8,10 +8,10 @@
 //-----------------------------------------------------------------------------------
 
 namespace Prakrishta.Infrastructure.Cache
-{
-    using Microsoft.Extensions.Caching.Memory;
+{    
     using System;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Caching.Memory;
 
     /// <summary>
     /// Defines the <see cref="InMemoryDataCache" /> class

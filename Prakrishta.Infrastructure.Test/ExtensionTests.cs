@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Prakrishta.Infrastructure.Extensions;
 using Prakrishta.Infrastructure.Helper;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -267,6 +268,65 @@ namespace Prakrishta.Infrastructure.Test
             //Assert
             Assert.IsTrue(users.Count() == 3, "No data conversion");
         }
+
+        [TestMethod]
+        [DataRow("53210", typeof(int))]
+        [DataRow("555.30", typeof(double))]
+        [DataRow("53210563", typeof(Int64))]
+        public void StringToNullableTypeConversionTest(string value, Type expectedType)
+        {
+            //Act
+            dynamic result = null;
+
+            if (expectedType == typeof(int))
+                result = value.GetValueOrNull<int>();
+            else if (expectedType == typeof(double))
+                result = value.GetValueOrNull<double>();
+            else if (expectedType == typeof(Int64))
+                result = value.GetValueOrNull<Int64>();
+
+            //Assert
+            Assert.AreEqual<Type>(expectedType, result?.GetType());
+        }
+
+        [TestMethod]
+        public void GetValueFromDataRowTest()
+        {
+            //Arrange
+            DataTable dataTable = new DataTable("Users");
+            dataTable.Columns.Add(new DataColumn("FirstName"));
+            dataTable.Columns.Add(new DataColumn("LastName"));
+            dataTable.Columns.Add(new DataColumn("Age"));
+
+            var row = dataTable.NewRow();
+            row["FirstName"] = "Arul";
+            row["LastName"] = "Sengottaiyan";
+            row["Age"] = 10;
+            dataTable.Rows.Add(row);
+
+            row = dataTable.NewRow();
+            row["FirstName"] = "Prakrishta";
+            row["LastName"] = "Technologies";
+            row["Age"] = 1;
+            dataTable.Rows.Add(row);
+
+            row = dataTable.NewRow();
+            row["FirstName"] = "Microsoft";
+            row["LastName"] = "Technologies";
+            row["Age"] = 30;
+            dataTable.Rows.Add(row);
+
+            //Act
+            var result1 = dataTable.Rows[0].GetValue<int>("Age");
+            var result2 = dataTable.Rows[1].GetValue<string>(0);
+            var result3 = dataTable.Rows[2].GetValue<int>(2);
+
+            //Assert
+            Assert.AreEqual<int>(10, result1);
+            Assert.AreEqual<string>("Prakrishta", result2);
+            Assert.AreEqual<int>(30, result3);
+        }
+
     }
 
     public class User

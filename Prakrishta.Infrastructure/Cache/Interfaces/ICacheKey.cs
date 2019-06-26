@@ -12,7 +12,7 @@ namespace Prakrishta.Infrastructure.Cache
     /// <summary>
     /// Defines the <see cref="ICacheKey{TItem}" /> interface
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
+    /// <typeparam name="TItem">The cached item type</typeparam>
     public interface ICacheKey<TItem>
     {
         #region |Properties|
