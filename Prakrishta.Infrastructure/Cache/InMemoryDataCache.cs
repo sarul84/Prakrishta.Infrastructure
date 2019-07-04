@@ -37,7 +37,7 @@ namespace Prakrishta.Infrastructure.Cache
         /// <summary>
         /// Initializes a new instance of the <see cref="InMemoryDataCache"/> class.
         /// </summary>
-        /// <param name="memoryCache">The memoryCache<see cref="IMemoryCache"/> object</param>
+        /// <param name="memoryCache">The memory cache<see cref="IMemoryCache"/> object</param>
         /// <param name="expirationConfiguration">The expiration configuration<see cref="Dictionary{string, TimeSpan}"/></param>
         public InMemoryDataCache(IMemoryCache memoryCache, Dictionary<string, TimeSpan> expirationConfiguration)
         {

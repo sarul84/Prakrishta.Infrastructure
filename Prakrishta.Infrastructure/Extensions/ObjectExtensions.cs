@@ -248,6 +248,45 @@ namespace Prakrishta.Infrastructure.Extensions
         }
 
         /// <summary>
+        /// Converts object value to specified type
+        /// </summary>
+        /// <param name="@value">The source object</param>
+        /// <param name="type">The target type</param>
+        /// <returns>Converted type</returns>
+        public static T To<T>(this object @value, T defaultValue = default(T)) 
+        {
+            if (!value.IsNullOrDBNull())
+            {
+                Type targetType = typeof(T);
+
+                if (value.GetType() == targetType)
+                {
+                    return (T)value;
+                }
+
+                TypeConverter converter = TypeDescriptor.GetConverter(value);
+                if (converter != null)
+                {
+                    if (converter.CanConvertTo(targetType))
+                    {
+                        return (T)converter.ConvertTo(value, targetType);
+                    }
+                }
+
+                converter = TypeDescriptor.GetConverter(targetType);
+                if (converter != null)
+                {
+                    if (converter.CanConvertFrom(value.GetType()))
+                    {
+                        return (T)converter.ConvertFrom(value);
+                    }
+                }
+            }
+
+            return defaultValue;
+        }
+
+        /// <summary>
         /// Serialize an Object To an XML Document
         /// </summary>
         /// <param name="@value">The value<see cref="object"/></param>
