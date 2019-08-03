@@ -41,38 +41,38 @@ namespace Prakrishta.Infrastructure.Extensions
         /// </summary>
         /// <param name="guid">The value to act on.</param>
         /// <returns>Encoded base 64 string</returns>
-        public static string EncodeBase64String(this Guid guid)
-        {
-            const byte ForwardSlashByte = (byte)'/';
-            const byte PlusByte = (byte)'+';
-            const char Underscore = '_';
-            const char Dash = '-';
+        //public static string EncodeBase64String(this Guid guid)
+        //{
+        //    const byte ForwardSlashByte = (byte)'/';
+        //    const byte PlusByte = (byte)'+';
+        //    const char Underscore = '_';
+        //    const char Dash = '-';
 
-            Span<byte> guidBytes = stackalloc byte[16];
-            Span<byte> encodedBytes = stackalloc byte[24];
+        //    Span<byte> guidBytes = stackalloc byte[16];
+        //    Span<byte> encodedBytes = stackalloc byte[24];
 
-            MemoryMarshal.TryWrite(guidBytes, ref guid);
-            Base64.EncodeToUtf8(guidBytes, encodedBytes, out _, out _);
+        //    MemoryMarshal.TryWrite(guidBytes, ref guid);
+        //    Base64.EncodeToUtf8(guidBytes, encodedBytes, out _, out _);
 
-            Span<char> chars = stackalloc char[22];
+        //    Span<char> chars = stackalloc char[22];
 
-            for (var i = 0; i < 22; i++)
-            {
-                switch (encodedBytes[i])
-                {
-                    case ForwardSlashByte:
-                        chars[i] = Dash;
-                        break;
-                    case PlusByte:
-                        chars[i] = Underscore;
-                        break;
-                    default:
-                        chars[i] = (char)encodedBytes[i];
-                        break;
-                }
-            }
+        //    for (var i = 0; i < 22; i++)
+        //    {
+        //        switch (encodedBytes[i])
+        //        {
+        //            case ForwardSlashByte:
+        //                chars[i] = Dash;
+        //                break;
+        //            case PlusByte:
+        //                chars[i] = Underscore;
+        //                break;
+        //            default:
+        //                chars[i] = (char)encodedBytes[i];
+        //                break;
+        //        }
+        //    }
 
-            return chars.ToString();
-        }
+        //    return chars.ToString();
+        //}
     }
 }
