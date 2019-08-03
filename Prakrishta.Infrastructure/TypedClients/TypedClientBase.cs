@@ -9,11 +9,17 @@
 
 namespace Prakrishta.Infrastructure.TypedClients
 {
+    using System;
     using System.Collections.Generic;
+    using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
-
+    using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using Prakrishta.Infrastructure.Exceptions;
+    
     /// <summary>
     /// Base class for http typed clients
     /// </summary>
@@ -35,6 +41,11 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// </summary>
         protected readonly HttpClient Client;
 
+        /// <summary>
+        /// Defines the Logger
+        /// </summary>
+        protected readonly ILogger Logger;
+
         #endregion
 
         #region |Constructors|
@@ -42,9 +53,11 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedClientBase"/> class.
         /// </summary>
+        /// <param name="logger">The logger object</param>
         /// <param name="client">The http client object</param>
-        public TypedClientBase(HttpClient client)
+        public TypedClientBase(ILogger logger, HttpClient client)
         {
+            this.Logger = logger;
             this.Client = client;
             this.Client.DefaultRequestHeaders.Connection.Add("keep-alive");
         }
@@ -105,16 +118,91 @@ namespace Prakrishta.Infrastructure.TypedClients
             };
         }
 
+        /// <summary>
+        /// The method that creates HttpRequest object
+        /// </summary>
+        /// <param name="method">The method<see cref="HttpMethod"/></param>
+        /// <param name="url">The url<see cref="string"/></param>
+        /// <returns>The <see cref="HttpRequestMessage"/></returns>
         public HttpRequestMessage GetRequest(HttpMethod method, string url)
         {
             var request = new HttpRequestMessage(method, Client.BaseAddress + url);
 
-            foreach(var header in Client.DefaultRequestHeaders)
+            foreach (var header in Client.DefaultRequestHeaders)
             {
                 request.Headers.Add(header.Key, header.Value);
             }
 
             return request;
+        }
+
+        /// <summary>
+        /// The method that deserializes http response message
+        /// </summary>
+        /// <typeparam name="T">the generic type parameter</typeparam>
+        /// <param name="url">The url <see cref="string"/></param>
+        /// <param name="request">The request<see cref="HttpRequestMessage"/></param>
+        /// <param name="httpResponse">The http response<see cref="HttpResponseMessage"/></param>
+        /// <param name="elapsedTime">The elapsed time<see cref="long"/></param>
+        /// <param name="memberName">The member name<see cref="string"/></param>
+        /// <param name="lineNumber">The line number<see cref="int"/></param>
+        /// <param name="filePath">The filePath<see cref="string"/></param>
+        /// <returns>The deserialized<see cref="T"/> object</returns>
+        protected async Task<T> DeserializeResponse<T>(string url,
+            HttpRequestMessage request,
+            HttpResponseMessage httpResponse,
+            long elapsedTime,
+            string memberName,
+            int lineNumber,
+            string filePath)
+        {
+            T result = default(T);
+
+            if (httpResponse?.Content != null && httpResponse?.IsSuccessStatusCode == true)
+            {
+                var jsonString = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(jsonString))
+                    {
+                        result = JsonConvert.DeserializeObject<T>(jsonString);
+                    }
+                }
+                catch
+                {
+                    throw new ApiResponseException(new Models.ErrorDetail
+                    {
+                        StatusCode = (int)httpResponse.StatusCode,
+                        Message = $"Error deserialzing response. The response: {jsonString}",
+                        EventId = Guid.NewGuid().ToString()
+                    });
+                }
+            }
+            else if (httpResponse != null)
+            {
+                this.LogError($"{this.Client.BaseAddress}{url}",
+                    httpResponse.ReasonPhrase,
+                    elapsedTime,
+                    httpResponse.StatusCode,
+                    memberName,
+                    lineNumber,
+                    filePath);
+
+                throw new ApiResponseException(new Models.ErrorDetail
+                {
+                    StatusCode = (int)httpResponse.StatusCode,
+                    Message = httpResponse.ReasonPhrase,
+                    EventId = Guid.NewGuid().ToString()
+                });
+            }
+
+            this.LogInformation($"{this.Client.BaseAddress}{url}", request.Method, elapsedTime,
+                httpResponse.StatusCode, memberName, lineNumber, filePath);
+
+            httpResponse?.Dispose();
+
+            return result;
         }
 
         /// <summary>
@@ -124,6 +212,52 @@ namespace Prakrishta.Infrastructure.TypedClients
         private void AddMediaType(string mediaType)
         {
             this.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
+        }
+
+        /// <summary>
+        /// The method that logs error
+        /// </summary>
+        /// <param name="url">The url<see cref="string"/></param>
+        /// <param name="reason">The reason<see cref="string"/></param>
+        /// <param name="time">The time<see cref="long"/></param>
+        /// <param name="statusCode">The statusCode<see cref="HttpStatusCode"/></param>
+        /// <param name="memberName">The member name<see cref="string"/></param>
+        /// <param name="lineNumber">The line number<see cref="int"/></param>
+        /// <param name="filePath">The filePath<see cref="string"/></param>
+        private void LogError(string url, string reason, long time,
+            HttpStatusCode statusCode,
+            string memberName,
+            int lineNumber,
+            string filePath)
+        {
+            this.Logger.LogError($"{reason}. " +
+                        $"Status code: {statusCode}" +
+                        $"Request Url: {url}" +
+                        $"Time taken: {time}ms" +
+                        $" Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
+        }
+
+        /// <summary>
+        /// The method that logs information
+        /// </summary>
+        /// <param name="url">The url<see cref="string"/></param>
+        /// <param name="method">The method<see cref="HttpMethod"/></param>
+        /// <param name="time">The elapsed time<see cref="long"/></param>
+        /// <param name="statusCode">The statusCode<see cref="HttpStatusCode"/></param>
+        /// <param name="memberName">The member name<see cref="string"/></param>
+        /// <param name="lineNumber">The line number<see cref="int"/></param>
+        /// <param name="filePath">The filePath<see cref="string"/></param>
+        private void LogInformation(string url,
+            HttpMethod method,
+            long time,
+            HttpStatusCode statusCode,
+            string memberName,
+            int lineNumber,
+            string filePath)
+        {
+            this.Logger.LogInformation($"The {method} method has taken {time} ms. " +
+                $"Status code: {statusCode}" +
+                $"Request Url: {url} Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
         }
 
         #endregion

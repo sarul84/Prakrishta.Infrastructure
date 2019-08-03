@@ -49,7 +49,10 @@ namespace Prakrishta.Infrastructure.Helper
         /// <param name="uri">The uri <see cref="string"/></param>
         public QueryParameterBuilder(string uri) : this()
         {
-            builder = new UriBuilder(uri);
+            if (!string.IsNullOrEmpty(uri))
+            {
+                builder = new UriBuilder(uri);
+            }
         }
 
         #endregion
@@ -68,8 +71,12 @@ namespace Prakrishta.Infrastructure.Helper
         {
             get
             {
-                builder.Query = collection.ToString();
-                return builder.Uri;
+                if (builder != null)
+                {
+                    builder.Query = collection.ToString();
+                }
+
+                return builder?.Uri;
             }
         }
 
@@ -96,14 +103,12 @@ namespace Prakrishta.Infrastructure.Helper
         /// <param name="paramCollection">The key value pair<see cref="IDictionary{string, string}"/></param>
         /// <param name="ignoreEmptyValues">The ignore empty values<see cref="bool"/> flag</param>
         /// <returns>The <see cref="QueryParameterBuilder"/> object</returns>
-        public QueryParameterBuilder AddParameter(IDictionary<string, string> paramCollection, bool ignoreEmptyValues = true)
+        public void AddParameter(IDictionary<string, string> paramCollection, bool ignoreEmptyValues = true)
         {
             foreach(var keyValuePair in paramCollection)
             {
                 this.AddParameter(keyValuePair.Key, keyValuePair.Value, ignoreEmptyValues);
             }           
-
-            return this;
         }
 
         /// <summary>
@@ -124,7 +129,7 @@ namespace Prakrishta.Infrastructure.Helper
         }
 
         /// <inheritdoc />
-        public override string ToString() => Uri.ToString();
+        public override string ToString() => Uri == null ? QueryParams : Uri?.ToString();
 
         #endregion
     }

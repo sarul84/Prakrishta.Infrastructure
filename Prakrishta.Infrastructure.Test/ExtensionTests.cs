@@ -327,6 +327,23 @@ namespace Prakrishta.Infrastructure.Test
             Assert.AreEqual<int>(30, result3);
         }
 
+        [TestMethod]
+        [DataRow("https://testsite.com/types")]
+        [DataRow(null)]
+        public void QueryParamBuilderTest(string baseUrl)
+        {
+            //Arrange
+            var queryParam = new QueryParameterBuilder(baseUrl)
+                                    .AddParameter("page", "1")
+                                    .AddParameter("size", "25");
+
+            //Act
+            var url = queryParam.ToString();
+
+            //Assert
+            Assert.AreEqual($"{baseUrl}?page=1&size=25", url);
+        }
+
     }
 
     public class User

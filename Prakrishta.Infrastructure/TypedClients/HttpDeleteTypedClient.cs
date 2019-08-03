@@ -8,30 +8,18 @@
 //-----------------------------------------------------------------------------------
 
 namespace Prakrishta.Infrastructure.TypedClients
-{
-    using System;
+{    
     using System.Diagnostics;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
-    using Prakrishta.Infrastructure.Exceptions;    
 
     /// <summary>
     /// Defines the <see cref="HttpDeleteTypedClient" /> class
     /// </summary>
     public sealed class HttpDeleteTypedClient : TypedClientBase
     {
-        #region |Private Fields|
-
-        /// <summary>
-        /// Defines the logger
-        /// </summary>
-        private readonly ILogger logger;
-
-        #endregion
-
         #region |Constructors|
 
         /// <summary>
@@ -40,9 +28,8 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="logger">The logger object of <see cref="ILogger"/> type</param>
         /// <param name="client">The http client <see cref="HttpClient"/></param>
         public HttpDeleteTypedClient(ILogger logger, HttpClient client)
-            : base(client)
+            : base(logger, client)
         {
-            this.logger = logger;
         }
 
         #endregion
@@ -60,8 +47,6 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <returns>The <see cref="T"/> object</returns>
         public T Delete<T>(string url, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null) where T : class
         {
-            T result = null;
-
             var request = base.GetRequest(HttpMethod.Delete, url);
 
             var stopwatch = new Stopwatch();
@@ -70,53 +55,7 @@ namespace Prakrishta.Infrastructure.TypedClients
             var response = this.Client.DeleteAsync(url).GetAwaiter().GetResult();
             stopwatch.Stop();
 
-            if (response?.Content != null)
-            {
-                var jsonString = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(jsonString))
-                    {
-                        result = JsonConvert.DeserializeObject<T>(jsonString);
-                    }
-                    else
-                    {
-                        this.logger.LogInformation($"No content received for the request. Status Code {response.StatusCode}. Request Url: {this.Client.BaseAddress}{url}," +
-                            $" Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
-                    }
-                }
-                catch
-                {
-                    throw new ApiResponseException(new Models.ErrorDetail
-                    {
-                        StatusCode = 500,
-                        Message = $"Error deserialzing response: {jsonString}",
-                        EventId = Guid.NewGuid().ToString()
-                    });
-                }
-            }
-            else if (response != null)
-            {
-                this.logger.LogError($"{response?.ReasonPhrase}. " +
-                        $"Status code: {response?.StatusCode}" +
-                        $"Request Url: {this.Client.BaseAddress}{url}" +
-                        $"Time taken: {stopwatch.ElapsedMilliseconds}ms" +
-                        $" Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
-
-                throw new ApiResponseException(new Models.ErrorDetail
-                {
-                    StatusCode = (int)response.StatusCode,
-                    Message = response.ReasonPhrase,
-                    EventId = Guid.NewGuid().ToString()
-                });
-            }
-
-            this.logger.LogInformation($"The {request.Method} method has taken {stopwatch.ElapsedMilliseconds} ms. " +
-                $"Status code: {response.StatusCode}" +
-                $"Request Url: {this.Client.BaseAddress}{url}");
-
-            return result;
+            return this.DeserializeResponse<T>(url, request, response, stopwatch.ElapsedMilliseconds, memberName, lineNumber, filePath).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -130,8 +69,6 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <returns>The <see cref="T"/> object</returns>
         public async Task<T> DeleteAsync<T>(string url, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null) where T : class
         {
-            T result = null;
-
             var request = base.GetRequest(HttpMethod.Delete, url);
 
             var stopwatch = new Stopwatch();
@@ -140,53 +77,7 @@ namespace Prakrishta.Infrastructure.TypedClients
             var response = await this.Client.DeleteAsync(url).ConfigureAwait(false);
             stopwatch.Stop();
 
-            if (response?.Content != null)
-            {
-                var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                try
-                {
-                    if (!string.IsNullOrEmpty(jsonString))
-                    {
-                        result = JsonConvert.DeserializeObject<T>(jsonString);
-                    }
-                    else
-                    {
-                        this.logger.LogInformation($"No content received for the request. Status Code {response.StatusCode}. Request Url: {this.Client.BaseAddress}{url}," +
-                            $" Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
-                    }
-                }
-                catch
-                {
-                    throw new ApiResponseException(new Models.ErrorDetail
-                    {
-                        StatusCode = 500,
-                        Message = $"Error deserialzing response: {jsonString}",
-                        EventId = Guid.NewGuid().ToString()
-                    });
-                }
-            }
-            else if (response != null)
-            {
-                this.logger.LogError($"{response?.ReasonPhrase}. " +
-                        $"Status code: {response?.StatusCode}" +
-                        $"Request Url: {this.Client.BaseAddress}{url}" +
-                        $"Time taken: {stopwatch.ElapsedMilliseconds}ms" +
-                        $" Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
-
-                throw new ApiResponseException(new Models.ErrorDetail
-                {
-                    StatusCode = (int)response.StatusCode,
-                    Message = response.ReasonPhrase,
-                    EventId = Guid.NewGuid().ToString()
-                });
-            }
-
-            this.logger.LogInformation($"The {request.Method} method has taken {stopwatch.ElapsedMilliseconds} ms. " +
-                $"Status code: {response.StatusCode}" +
-                $"Request Url: {this.Client.BaseAddress}{url}");
-
-            return result;
+            return await this.DeserializeResponse<T>(url, request, response, stopwatch.ElapsedMilliseconds, memberName, lineNumber, filePath);
         }
 
         #endregion
