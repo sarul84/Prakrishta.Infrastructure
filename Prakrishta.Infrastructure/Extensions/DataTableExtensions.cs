@@ -81,53 +81,51 @@ namespace Prakrishta.Infrastructure.Extensions
         {
             if (!data1.IsSchemaEquals(data2))
             {
-                throw new Exception("The schema of two tables is not matching");
+                throw new Exception("The schema of the two tables is not matching");
             }
 
-            DataTable result = new DataTable("Result");
-
-            using (DataSet dataSet = new DataSet())
+            DataTable result = new("Result");
+            foreach (DataColumn column in data1.Columns)
             {
-                dataSet.Tables.AddRange(new DataTable[] { data1.Copy(), data2.Copy() });
+                result.Columns.Add(column.ColumnName, column.DataType);
+            }
 
-                var firstColumns = dataSet.Tables[0].GetColumns().ToArray();
+            // Create dictionaries to store hash codes of rows from data1 and data2
+            Dictionary<string, DataRow> data1RowHashes = [];
+            Dictionary<string, DataRow> data2RowHashes = [];
 
-                var secondColumns = dataSet.Tables[1].GetColumns().ToArray();
+            // Populate the dictionaries
+            foreach (DataRow row in data1.Rows)
+            {
+                data1RowHashes[string.Join(",", row.ItemArray)] = row;
+            }
 
-                DataRelation r1 = new DataRelation(string.Empty, firstColumns, secondColumns, false);
-                dataSet.Relations.Add(r1);
+            foreach (DataRow row in data2.Rows)
+            {
+                data2RowHashes[string.Join(",", row.ItemArray)] = row;
+            }
 
-                DataRelation r2 = new DataRelation(string.Empty, secondColumns, firstColumns, false);
-                dataSet.Relations.Add(r2);
-
-                for (int i = 0; i < data1.Columns.Count; i++)
+            // Find rows in data1 that are not in data2
+            foreach (var entry in data1RowHashes)
+            {
+                if (!data2RowHashes.ContainsKey(entry.Key))
                 {
-                    result.Columns.Add(data1.Columns[i].ColumnName, data1.Columns[i].DataType);
+                    result.ImportRow(entry.Value);
                 }
+            }
 
-                result.BeginLoadData();
-                foreach (DataRow parentrow in dataSet.Tables[0].Rows)
+            // Find rows in data2 that are not in data1
+            foreach (var entry in data2RowHashes)
+            {
+                if (!data1RowHashes.ContainsKey(entry.Key))
                 {
-                    DataRow[] childrows = parentrow.GetChildRows(r1);
-                    if (childrows == null || childrows.Length == 0)
-                    {
-                        result.LoadDataRow(parentrow.ItemArray, true);
-                    }
+                    result.ImportRow(entry.Value);
                 }
-
-                foreach (DataRow parentrow in dataSet.Tables[1].Rows)
-                {
-                    DataRow[] childrows = parentrow.GetChildRows(r2);
-                    if (childrows == null || childrows.Length == 0)
-                    {
-                        result.LoadDataRow(parentrow.ItemArray, true);
-                    }
-                }
-                result.EndLoadData();
             }
 
             return result;
         }
+
 
         /// <summary>
         /// Get list of columns from Data Column collection

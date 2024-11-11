@@ -43,16 +43,9 @@ namespace Prakrishta.Infrastructure.Test
         }
     }
 
-    public class HttpTypedClient : IHttpTypedClient
+    public class HttpTypedClient(HttpClient client) : IHttpTypedClient
     {
-        private readonly HttpClient httpClient;
-
-        public HttpTypedClient(HttpClient client)
-        {
-            this.httpClient = client;
-        }
-
-        public Uri BaseUri => this.httpClient.BaseAddress;
+        public Uri BaseUri => client.BaseAddress;
     }
 
     public interface IHttpTypedClient

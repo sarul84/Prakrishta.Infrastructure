@@ -344,6 +344,65 @@ namespace Prakrishta.Infrastructure.Test
             Assert.AreEqual($"{baseUrl}?page=1&size=25", url);
         }
 
+        [TestMethod]
+        public void GetDataDifference_ShouldReturnDifferences_WhenTablesAreDifferent()
+        {
+            // Arrange
+            DataTable table1 = new();
+            table1.Columns.Add("ID", typeof(int));
+            table1.Columns.Add("Name", typeof(string));
+            table1.Rows.Add(1, "John");
+            table1.Rows.Add(2, "Jane");
+            table1.Rows.Add(3, "Doe");
+            DataTable table2 = new DataTable();
+            table2.Columns.Add("ID", typeof(int));
+            table2.Columns.Add("Name", typeof(string));
+            table2.Rows.Add(2, "Jane"); 
+            table2.Rows.Add(3, "Doe");
+            table2.Rows.Add(4, "Smith");
+
+            // Act
+            DataTable result = table1.GetDataDifference(table2);
+
+            // Assert
+            Assert.AreEqual(2, result.Rows.Count);
+            Assert.AreEqual(1, result.Rows[0]["ID"]);
+            Assert.AreEqual("John", result.Rows[0]["Name"]);
+            Assert.AreEqual(4, result.Rows[1]["ID"]);
+            Assert.AreEqual("Smith", result.Rows[1]["Name"]);
+        }
+        [TestMethod]
+        public void GetDataDifference_ShouldReturnEmpty_WhenTablesAreIdentical()
+        {
+            // Arrange
+            DataTable table1 = new DataTable();
+            table1.Columns.Add("ID", typeof(int));
+            table1.Columns.Add("Name", typeof(string));
+            table1.Rows.Add(1, "John"); table1.Rows.Add(2, "Jane");
+            DataTable table2 = table1.Copy();
+            // Act
+            DataTable result = table1.GetDataDifference(table2);
+
+            // Assert
+            Assert.AreEqual(0, result.Rows.Count);
+        }
+        [TestMethod]
+        public void GetDataDifference_ShouldThrowException_WhenSchemasDoNotMatch()
+        {
+            // Arrange
+            DataTable table1 = new DataTable();
+            table1.Columns.Add("ID", typeof(int));
+            table1.Columns.Add("Name", typeof(string));
+            DataTable table2 = new DataTable();
+            table2.Columns.Add("ID", typeof(int));
+            table2.Columns.Add("FullName", typeof(string));
+
+            // Different column name 
+            // Act & Assert
+            Assert.ThrowsException<Exception>(() => table1.GetDataDifference(table2),
+                "The schema of two tables is not matching");
+        }
+
     }
 
     public class User

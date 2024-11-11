@@ -45,10 +45,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <typeparam name="T">The generic type</typeparam>
         /// <param name="source">The original collection</param>
         /// <returns>True if collection is empty otherwise false</returns>
-        public static bool IsEmpty<T>(this ICollection<T> source)
-        {
-            return source?.Any() == false;
-        }
+        public static bool IsEmpty<T>(this ICollection<T> source) => source?.Any() == false;
 
         /// <summary>
         /// check if collection is empty or null

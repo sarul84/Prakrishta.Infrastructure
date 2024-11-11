@@ -18,34 +18,24 @@ namespace Prakrishta.Infrastructure.Helper
     /// Defines the methods to resolve http typed client dynamically
     /// </summary>
     /// <typeparam name="TInterface">The generic typed client type parameter</typeparam>
-    public class TypedClientResolver<TInterface> : IDynamicResolver<TInterface, string>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TypedClientResolver{TInterface}"/> class.
+    /// </remarks>
+    /// <param name="factory">The http client factory object</param>
+    /// <param name="typedClient">The typedClient factory object</param>
+    public class TypedClientResolver<TInterface>(IHttpClientFactory factory, ITypedHttpClientFactory<TInterface> typedClient) : IDynamicResolver<TInterface, string>
     {
         #region |Private Fields|
 
         /// <summary>
         /// Defines the http client factory
         /// </summary>
-        private readonly IHttpClientFactory factory;
+        private readonly IHttpClientFactory factory = factory ?? throw new ArgumentNullException("Unable to resolve http client factory, please make sure it is configured with service");
 
         /// <summary>
         /// Defines the typedClient factory
         /// </summary>
-        private readonly ITypedHttpClientFactory<TInterface> typedClient;
-
-        #endregion
-
-        #region |Constructors|
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TypedClientResolver{TInterface}"/> class.
-        /// </summary>
-        /// <param name="factory">The http client factory object</param>
-        /// <param name="typedClient">The typedClient factory object</param>
-        public TypedClientResolver(IHttpClientFactory factory, ITypedHttpClientFactory<TInterface> typedClient)
-        {
-            this.typedClient = typedClient ?? throw new ArgumentNullException("Unable to resolve typed client factory, please make sure it is configured with service collection");
-            this.factory = factory ?? throw new ArgumentNullException("Unable to resolve http client factory, please make sure it is configured with service");
-        }
+        private readonly ITypedHttpClientFactory<TInterface> typedClient = typedClient ?? throw new ArgumentNullException("Unable to resolve typed client factory, please make sure it is configured with service collection");
 
         #endregion
 
