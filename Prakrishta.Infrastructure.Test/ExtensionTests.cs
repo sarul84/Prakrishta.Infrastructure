@@ -403,6 +403,18 @@ namespace Prakrishta.Infrastructure.Test
                 "The schema of two tables is not matching");
         }
 
+        [TestMethod]
+        public void CalculateAge_ShouldReturnCorrectAge_WhenGivenValidBirthDate()
+        {
+            // Arrange
+            DateTime birthDate = new DateTime(1984, 05, 10);
+            
+            // Act
+            int age = birthDate.Age();
+            // Assert
+            Assert.AreEqual(40, age);
+        }
+
     }
 
     public class User

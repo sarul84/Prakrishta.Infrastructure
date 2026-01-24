@@ -47,7 +47,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="value">The value to be updated in dictionary</param>
         public static void Update<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
-            if (dictionary == null) throw new ArgumentNullException();
+            ArgumentNullException.ThrowIfNull(dictionary);
             dictionary[key] = value;
         }
 
@@ -118,7 +118,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="value">The value to be updated in dictionary</param>
         public static void AddIfNot<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
-            if (dictionary == null) throw new ArgumentNullException();
+            ArgumentNullException.ThrowIfNull(dictionary);
             if(!dictionary.ContainsKey(key))
             {
                 dictionary.Add(key, value);
@@ -135,7 +135,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="value">The value to be updated in dictionary</param>
         public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
-            if (dictionary == null) throw new ArgumentNullException();
+            ArgumentNullException.ThrowIfNull(dictionary);
             if (!dictionary.ContainsKey(key))
             {
                 dictionary.Add(key, value);
@@ -156,7 +156,7 @@ namespace Prakrishta.Infrastructure.Extensions
         public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, 
             KeyValuePair<TKey,TValue> keyValue)
         {
-            if (dictionary == null) throw new ArgumentNullException();
+            ArgumentNullException.ThrowIfNull(dictionary);
             if (!dictionary.ContainsKey(keyValue.Key))
             {
                 dictionary.Add(keyValue.Key, keyValue.Value);

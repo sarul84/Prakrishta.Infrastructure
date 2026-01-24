@@ -230,11 +230,9 @@ namespace Prakrishta.Infrastructure.TypedClients
             int lineNumber,
             string filePath)
         {
-            this.Logger.LogError($"{reason}. " +
-                        $"Status code: {statusCode}" +
-                        $"Request Url: {url}" +
-                        $"Time taken: {time}ms" +
-                        $" Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
+            this.Logger.LogError(
+                "{Reason}. StatusCode: {StatusCode}, Url: {Url}, DurationMs: {Duration}, Caller: {Caller}, Line: {Line}, File: {File}",
+            reason, statusCode, url, time, memberName, lineNumber, filePath);
         }
 
         /// <summary>
@@ -255,9 +253,8 @@ namespace Prakrishta.Infrastructure.TypedClients
             int lineNumber,
             string filePath)
         {
-            this.Logger.LogInformation($"The {method} method has taken {time} ms. " +
-                $"Status code: {statusCode}" +
-                $"Request Url: {url} Caller: {memberName}, Line number {lineNumber}, File name: {filePath}");
+            this.Logger.LogInformation("The {Method} method has taken {DurationMs} ms. StatusCode: {StatusCode}, Url: {Url}, Caller: {Caller}, Line: {Line}, File: {File}",
+                    method, time, statusCode, url, memberName, lineNumber, filePath);
         }
 
         #endregion

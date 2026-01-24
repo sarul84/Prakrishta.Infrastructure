@@ -56,19 +56,19 @@ namespace Prakrishta.Infrastructure.Extensions
             if (source.Columns.Count != target.Columns.Count)
                 return false;
 
-            var sourceColumns = source.Columns.Cast<DataColumn>();
-            var targetColumns = target.Columns.Cast<DataColumn>();
+            for (int i = 0; i < source.Columns.Count; i++)
+            {
+                var s = source.Columns[i];
+                var t = target.Columns[i];
 
-            var exceptCount = sourceColumns.Except(targetColumns, new DelegateComparer<DataColumn>((s, t) =>
-                s.ColumnName == t.ColumnName && s.DataType == t.DataType,
-                x =>
-                {
-                    var hash = 17;
-                    hash = 31 * hash + x.ColumnName.GetHashCode();
-                    hash = 31 * hash + x.DataType.GetHashCode();
-                    return hash;
-                })).Count();
-            return (exceptCount == 0);
+                if (!string.Equals(s.ColumnName, t.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    return false;
+
+                if (s.DataType != t.DataType)
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -80,50 +80,75 @@ namespace Prakrishta.Infrastructure.Extensions
         public static DataTable GetDataDifference(this DataTable data1, DataTable data2)
         {
             if (!data1.IsSchemaEquals(data2))
-            {
                 throw new Exception("The schema of the two tables is not matching");
-            }
 
-            DataTable result = new("Result");
-            foreach (DataColumn column in data1.Columns)
-            {
-                result.Columns.Add(column.ColumnName, column.DataType);
-            }
+            DataTable result = data1.Clone(); // copies schema safely
 
-            // Create dictionaries to store hash codes of rows from data1 and data2
-            Dictionary<string, DataRow> data1RowHashes = [];
-            Dictionary<string, DataRow> data2RowHashes = [];
+            // Pre-size for performance
+            var capacity = Math.Max(data1.Rows.Count, data2.Rows.Count);
 
-            // Populate the dictionaries
+            var data1Hashes = new Dictionary<int, List<DataRow>>(capacity);
+            var data2Hashes = new Dictionary<int, List<DataRow>>(capacity);
+
+            // Compute row hashes
             foreach (DataRow row in data1.Rows)
             {
-                data1RowHashes[string.Join(",", row.ItemArray)] = row;
+                int hash = ComputeRowHash(row);
+                if (!data1Hashes.TryGetValue(hash, out var list))
+                    data1Hashes[hash] = list = new List<DataRow>();
+
+                list.Add(row);
             }
 
             foreach (DataRow row in data2.Rows)
             {
-                data2RowHashes[string.Join(",", row.ItemArray)] = row;
+                int hash = ComputeRowHash(row);
+                if (!data2Hashes.TryGetValue(hash, out var list))
+                    data2Hashes[hash] = list = new List<DataRow>();
+
+                list.Add(row);
             }
 
-            // Find rows in data1 that are not in data2
-            foreach (var entry in data1RowHashes)
+            // Rows in data1 not in data2
+            foreach (var kvp in data1Hashes)
             {
-                if (!data2RowHashes.ContainsKey(entry.Key))
+                if (!data2Hashes.ContainsKey(kvp.Key))
                 {
-                    result.ImportRow(entry.Value);
+                    foreach (var row in kvp.Value)
+                        result.Rows.Add(row.ItemArray);
                 }
             }
 
-            // Find rows in data2 that are not in data1
-            foreach (var entry in data2RowHashes)
+            // Rows in data2 not in data1
+            foreach (var kvp in data2Hashes)
             {
-                if (!data1RowHashes.ContainsKey(entry.Key))
+                if (!data1Hashes.ContainsKey(kvp.Key))
                 {
-                    result.ImportRow(entry.Value);
+                    foreach (var row in kvp.Value)
+                        result.Rows.Add(row.ItemArray);
                 }
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Computes a hash code for the specified DataRow based on the string representations of its column values.
+        /// </summary>
+        /// <remarks>The hash code is calculated using the trimmed string representations of each column
+        /// value, compared using ordinal string comparison. Null values are treated as empty strings.</remarks>
+        /// <param name="row">The DataRow whose column values are used to compute the hash code. Cannot be null.</param>
+        /// <returns>An integer hash code representing the combined values of the DataRow's columns.</returns>
+        private static int ComputeRowHash(DataRow row)
+        {
+            var hash = new HashCode();
+
+            foreach (var item in row.ItemArray)
+            {
+                hash.Add(item?.ToString()?.Trim() ?? string.Empty, StringComparer.Ordinal);
+            }
+
+            return hash.ToHashCode();
         }
 
 

@@ -126,17 +126,13 @@ namespace Prakrishta.Infrastructure.Extensions
                 return string.Concat(day, "th");
             }
 
-            switch (day % 10)
+            return (day % 10) switch
             {
-                case 1:
-                    return string.Concat(day, "st");
-                case 2:
-                    return string.Concat(day, "nd");
-                case 3:
-                    return string.Concat(day, "rd");
-                default:
-                    return string.Concat(day, "th");
-            }
+                1 => string.Concat(day, "st"),
+                2 => string.Concat(day, "nd"),
+                3 => string.Concat(day, "rd"),
+                _ => string.Concat(day, "th"),
+            };
         }
 
         /// <summary>
