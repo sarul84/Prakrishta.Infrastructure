@@ -407,12 +407,12 @@ namespace Prakrishta.Infrastructure.Test
         public void CalculateAge_ShouldReturnCorrectAge_WhenGivenValidBirthDate()
         {
             // Arrange
-            DateTime birthDate = new DateTime(1984, 05, 10);
+            DateTime birthDate = new DateTime(1984, 07, 20);
             
             // Act
             int age = birthDate.Age();
             // Assert
-            Assert.AreEqual(40, age);
+            Assert.AreEqual(41, age);
         }
 
     }
