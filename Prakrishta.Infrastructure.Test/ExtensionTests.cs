@@ -399,7 +399,7 @@ namespace Prakrishta.Infrastructure.Test
 
             // Different column name 
             // Act & Assert
-            Assert.ThrowsException<Exception>(() => table1.GetDataDifference(table2),
+            Assert.ThrowsExactly<Exception>(() => table1.GetDataDifference(table2),
                 "The schema of two tables is not matching");
         }
 
