@@ -4,7 +4,7 @@ Small generic interfaces and common utilities for building .net applications
 This project has generic repositories both sync and async that help to build .net applications. There are few extension methods and helper classes commonly used by programmers across the applications.
 
 Build Status:
-[![Build Status](https://dev.azure.com/prakrishta0270/Prakrishta%20Open%20Source/_apis/build/status/sarul84.Prakrishta.Infrastructure?branchName=master)](https://dev.azure.com/prakrishta0270/Prakrishta%20Open%20Source/_build/latest?definitionId=3&branchName=master)
+[![Build Status](https://github.com/sarul84/Prakrishta.Infrastructure/actions/workflows/build.yml/badge.svg)](https://github.com/sarul84/Prakrishta.Infrastructure/actions/workflows/build.yml)
 
 Interfaces:
 
