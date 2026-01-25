@@ -52,18 +52,18 @@ namespace Prakrishta.Infrastructure.Helper
         public static string PhoneNumber(string phone, string formatter)
         {
             string formattedPhoneNumber = phone;
-            string trimmed = formattedPhoneNumber.GetNumericals();
+            string? trimmed = formattedPhoneNumber.GetNumericals();
             long numericPhoneNumber = 0;
             if (!string.IsNullOrEmpty(trimmed))
             {
-                if (trimmed.Length == 7)
+                if (trimmed?.Length == 7)
                 {
                     numericPhoneNumber = GetLong(trimmed);
                     formattedPhoneNumber = numericPhoneNumber.ToString("###-####", CultureInfo.CurrentCulture);
                 }
                 else
                 {
-                    if (trimmed.Length == 10)
+                    if (trimmed?.Length == 10)
                     {
                         numericPhoneNumber = GetLong(trimmed);
                         if (!string.IsNullOrEmpty(formatter))

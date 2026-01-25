@@ -118,7 +118,7 @@ namespace Prakrishta.Infrastructure.Test
             var distinctRecords = userCollection.DistinctBy<User>(x => new { x.FirstName, x.LastName });
 
             //Assert
-            Assert.IsTrue(distinctRecords.Count() == 6, "No items present");
+            Assert.AreEqual(6, distinctRecords.Count(), "No items present");
         }
 
         [TestMethod]
@@ -153,7 +153,7 @@ namespace Prakrishta.Infrastructure.Test
             var distinctRecords = userCollection.DistinctBy<User>("FirstName");
 
             //Assert
-            Assert.IsTrue(distinctRecords.Count() == 3, "No items present");
+            Assert.AreEqual(3, distinctRecords.Count(), "No items present");
         }
 
         [TestMethod]
@@ -197,7 +197,7 @@ namespace Prakrishta.Infrastructure.Test
             userCollection.Remove(x => x.FirstName == "Extensions");
 
             //Assert
-            Assert.AreEqual(4, userCollection.Count, "No items present");
+            Assert.HasCount(4, userCollection, "No items present");
         }
 
         [TestMethod]
@@ -266,7 +266,7 @@ namespace Prakrishta.Infrastructure.Test
             var users = dataTable.ToEntities<User>();
 
             //Assert
-            Assert.IsTrue(users.Count() == 3, "No data conversion");
+            Assert.AreEqual(3, users.Count(), "No data conversion");
         }
 
         [TestMethod]
@@ -365,7 +365,7 @@ namespace Prakrishta.Infrastructure.Test
             DataTable result = table1.GetDataDifference(table2);
 
             // Assert
-            Assert.AreEqual(2, result.Rows.Count);
+            Assert.HasCount(2, result.Rows);
             Assert.AreEqual(1, result.Rows[0]["ID"]);
             Assert.AreEqual("John", result.Rows[0]["Name"]);
             Assert.AreEqual(4, result.Rows[1]["ID"]);
@@ -384,7 +384,7 @@ namespace Prakrishta.Infrastructure.Test
             DataTable result = table1.GetDataDifference(table2);
 
             // Assert
-            Assert.AreEqual(0, result.Rows.Count);
+            Assert.IsEmpty(result.Rows);
         }
         [TestMethod]
         public void GetDataDifference_ShouldThrowException_WhenSchemasDoNotMatch()

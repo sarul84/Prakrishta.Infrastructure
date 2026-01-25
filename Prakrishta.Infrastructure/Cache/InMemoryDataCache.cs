@@ -52,16 +52,16 @@ namespace Prakrishta.Infrastructure.Cache
         /// <inheritdoc />
         public void Add<TItem>(TItem item, ICacheKey<TItem> key)
         {
-            var cachedObjectName = item.GetType().Name;
+            var cachedObjectName = item?.GetType().Name ?? "default";
             var timespan = this.expirationConfiguration[cachedObjectName];
 
             this.memoryCache.Set(key.CacheKey, item, timespan);
         }
 
         /// <inheritdoc />
-        public TItem Get<TItem>(ICacheKey<TItem> key) where TItem : class
+        public TItem? Get<TItem>(ICacheKey<TItem> key) where TItem : class
         {
-            if (this.memoryCache.TryGetValue(key.CacheKey, out TItem value))
+            if (this.memoryCache.TryGetValue(key.CacheKey, out TItem? value))
             {
                 return value;
             }

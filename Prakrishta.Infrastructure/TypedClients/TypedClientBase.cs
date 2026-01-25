@@ -148,15 +148,15 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The filePath<see cref="string"/></param>
         /// <returns>The deserialized<see cref="T"/> object</returns>
-        protected async Task<T> DeserializeResponse<T>(string url,
+        protected async Task<T?> DeserializeResponse<T>(string url,
             HttpRequestMessage request,
             HttpResponseMessage httpResponse,
             long elapsedTime,
-            string memberName,
+            string? memberName,
             int lineNumber,
-            string filePath)
+            string? filePath)
         {
-            T result = default(T);
+            T? result = default;
 
             if (httpResponse?.Content != null && httpResponse?.IsSuccessStatusCode == true)
             {
@@ -192,13 +192,13 @@ namespace Prakrishta.Infrastructure.TypedClients
                 throw new ApiResponseException(new Models.ErrorDetail
                 {
                     StatusCode = (int)httpResponse.StatusCode,
-                    Message = httpResponse.ReasonPhrase,
+                    Message = httpResponse.ReasonPhrase?? string.Empty,
                     EventId = Guid.NewGuid().ToString()
                 });
             }
 
             this.LogInformation($"{this.Client.BaseAddress}{url}", request.Method, elapsedTime,
-                httpResponse.StatusCode, memberName, lineNumber, filePath);
+                httpResponse?.StatusCode, memberName, lineNumber, filePath);
 
             httpResponse?.Dispose();
 
@@ -224,11 +224,11 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="memberName">The member name<see cref="string"/></param>
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The filePath<see cref="string"/></param>
-        private void LogError(string url, string reason, long time,
+        private void LogError(string url, string? reason, long time,
             HttpStatusCode statusCode,
-            string memberName,
+            string? memberName,
             int lineNumber,
-            string filePath)
+            string? filePath)
         {
             this.Logger.LogError(
                 "{Reason}. StatusCode: {StatusCode}, Url: {Url}, DurationMs: {Duration}, Caller: {Caller}, Line: {Line}, File: {File}",
@@ -248,10 +248,10 @@ namespace Prakrishta.Infrastructure.TypedClients
         private void LogInformation(string url,
             HttpMethod method,
             long time,
-            HttpStatusCode statusCode,
-            string memberName,
+            HttpStatusCode? statusCode,
+            string? memberName,
             int lineNumber,
-            string filePath)
+            string? filePath)
         {
             this.Logger.LogInformation("The {Method} method has taken {DurationMs} ms. StatusCode: {StatusCode}, Url: {Url}, Caller: {Caller}, Line: {Line}, File: {File}",
                     method, time, statusCode, url, memberName, lineNumber, filePath);

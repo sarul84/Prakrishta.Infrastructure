@@ -42,7 +42,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// </summary>
         /// <param name="value">The value</param>
         /// <returns>Returns only alphaNumerics</returns>
-        public static string GetAlphaNumerics(this string value)
+        public static string? GetAlphaNumerics(this string value)
         {
             if (value == null)
             {
@@ -59,7 +59,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <returns>The encrypted string</returns>
         public static string GetHashAlgorithm(this string input)
         {
-            HashAlgorithm hashAlgorithm = new SHA256CryptoServiceProvider();
+            HashAlgorithm hashAlgorithm = SHA256.Create();
             byte[] byteValue = Encoding.UTF8.GetBytes(input);
             byte[] byteHash = hashAlgorithm.ComputeHash(byteValue);
             return Convert.ToBase64String(byteHash);
@@ -70,7 +70,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// </summary>
         /// <param name="value">The value</param>
         /// <returns>Returns only Numerics</returns>
-        public static string GetNumericals(this string value)
+        public static string? GetNumericals(this string value)
         {
             if (value == null)
             {
@@ -86,7 +86,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="value">The value</param>
         /// <param name="allowDot">The flag to indicate if period can be removed or not</param>
         /// <returns>Returns string after removing all characters except numericals and period</returns>
-        public static string GetNumericals(this string value, bool allowDot)
+        public static string? GetNumericals(this string value, bool allowDot)
         {
             if (!allowDot)
             {
@@ -105,7 +105,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <param name="allowDot">The flag to indicate if period can be removed or not</param>
         /// <param name="allowComma">The flag to indicate if comma can be removed or not</param>
         /// <returns>Returns string after removing all characters except numericals, comma and period</returns>
-        public static string GetNumericals(this string value, bool allowDot, bool allowComma)
+        public static string? GetNumericals(this string value, bool allowDot, bool allowComma)
         {
             if (!allowDot && !allowComma)
             {
@@ -282,7 +282,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <typeparam name="T">object to convert to</typeparam>
         /// <param name="json">json</param>
         /// <returns>object</returns>
-        public static T JsonToObject<T>(this string json)
+        public static T? JsonToObject<T>(this string json)
         {
             var settings = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
             return JsonConvert.DeserializeObject<T>(json, settings);
@@ -455,7 +455,7 @@ namespace Prakrishta.Infrastructure.Extensions
         /// </summary>
         /// <param name="inputString">Input value</param>
         /// <returns>Title case string</returns>
-        public static string ToTitleCase(this string inputString) => CultureInfo.InvariantCulture?.TextInfo?.ToTitleCase(inputString.ToLower());
+        public static string? ToTitleCase(this string inputString) => CultureInfo.InvariantCulture?.TextInfo?.ToTitleCase(inputString.ToLower());
 
         /// <summary>
         /// The method trims all non numericals except period

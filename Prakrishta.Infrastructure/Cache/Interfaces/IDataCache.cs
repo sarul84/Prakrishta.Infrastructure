@@ -30,7 +30,7 @@ namespace Prakrishta.Infrastructure.Cache
         /// <typeparam name="TItem">The generic type of data that is going to be retrieved from cache</typeparam>
         /// <param name="key">The cache key<see cref="ICacheKey{TItem}"/> object</param>
         /// <returns>The <see cref="TItem"/></returns>
-        TItem Get<TItem>(ICacheKey<TItem> key) where TItem : class;
+        TItem? Get<TItem>(ICacheKey<TItem> key) where TItem : class;
 
         #endregion
     }

@@ -48,7 +48,7 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The filePath<see cref="string"/></param>
         /// <returns>The <see cref="T"/> object</returns>
-        public async Task<T> DeleteAsync<T>(string url, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null) where T : class
+        public async Task<T?> DeleteAsync<T>(string url, [CallerMemberName] string? memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null) where T : class
         {
             var request = base.GetRequest(HttpMethod.Delete, url);
 
@@ -70,7 +70,7 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The file path<see cref="string"/></param>
         /// <returns>The deserialized object of <see cref="Task{T}"/> type</returns>
-        public async Task<T> GetAsync<T>(string url, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null)
+        public async Task<T?> GetAsync<T>(string url, [CallerMemberName] string? memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
             where T : class
         {
             var request = base.GetRequest(HttpMethod.Get, url);
@@ -93,13 +93,17 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The filePath<see cref="string"/></param>
         /// <returns>The <see cref="T"/> object</returns>
-        public async Task<T> PatchAsync<T>(string url, JObject jsonObject, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null)
+        public async Task<T?> PatchAsync<T>(string url, JObject jsonObject, [CallerMemberName] string? memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null)
             where T : class
         {
             var request = this.AddHttpRequestMessage(new HttpMethod("PATCH"),
-                                jsonObject?.ToString(Formatting.Indented), url);
+                                jsonObject.ToString(Formatting.Indented), url);
 
-            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            if (request.Content != null)
+            {
+                request.Content.Headers.ContentType =
+                    MediaTypeHeaderValue.Parse("application/json");
+            }
 
             var stopwatch = new Stopwatch();
 
@@ -122,10 +126,13 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The filePath<see cref="string"/></param>
         /// <returns>The <see cref="Task{T}"/> object</returns>
-        public async Task<T> PostAsync<T>(string url, JObject jsonObject, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null) where T : class
+        public async Task<T?> PostAsync<T>(string url, JObject jsonObject, [CallerMemberName] string? memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null) where T : class
         {
             var request = base.AddHttpRequestMessage(HttpMethod.Post, jsonObject.ToString(Formatting.Indented), url);
-            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            if (request.Content != null)
+            {
+                request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            }
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -146,10 +153,14 @@ namespace Prakrishta.Infrastructure.TypedClients
         /// <param name="lineNumber">The line number<see cref="int"/></param>
         /// <param name="filePath">The filePath<see cref="string"/></param>
         /// <returns>The <see cref="Task{T}"/> object</returns>
-        public async Task<T> PutAsync<T>(string url, JObject jsonObject, [CallerMemberName] string memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string filePath = null) where T : class
+        public async Task<T?> PutAsync<T>(string url, JObject jsonObject, [CallerMemberName] string? memberName = null, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string? filePath = null) where T : class
         {
             var request = base.AddHttpRequestMessage(HttpMethod.Put, jsonObject.ToString(Formatting.Indented), url);
-            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+
+            if (request.Content != null)
+            {
+                request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            }
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();

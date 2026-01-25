@@ -22,9 +22,9 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <typeparam name="TValue">Value type (determined from the dictionary), must implement IComparable<Value></typeparam>
         /// <param name="dictionary">The dictionary</param>
         /// <returns>The key of the highest value in the dic.</returns>
-        public static TKey ArgMax<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) where TValue : IComparable<TValue>
+        public static TKey? ArgMax<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) where TValue : IComparable<TValue>
         {
-            if (dictionary == null || dictionary.Count == 0) return default(TKey);
+            if (dictionary == null || dictionary.Count == 0) return default;
             var dicList = dictionary.ToList();
             var maxKvp = dicList.First();
             foreach (var kvp in dicList.Skip(1))
@@ -75,10 +75,7 @@ namespace Prakrishta.Infrastructure.Extensions
         public static void DeleteIfKeyExists<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
         {
             if (dictionary == null) return;
-            if (dictionary.ContainsKey(key))
-            {
-                dictionary.Remove(key);
-            }
+            dictionary.Remove(key);
         }
 
         /// <summary>
@@ -88,14 +85,15 @@ namespace Prakrishta.Infrastructure.Extensions
         /// <typeparam name="TValue">Value type (determined from the dictionary)</typeparam>
         /// <param name="dictionary">The source dictionary</param>
         /// <param name="value">The value to be searched in dictionary</param>
-        public static void DeleteIfValueExists<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, 
-            TValue value) where TValue : IComparable<TValue>
+        public static void DeleteIfValueExists<TKey, TValue>(this Dictionary<TKey, TValue>? dictionary, TValue value) 
+            where TKey : notnull
+            where TValue: IComparable<TValue>
         {
             if (dictionary == null) return;
 
             if (!dictionary.ContainsValue(value)) return;
 
-            TKey key = default(TKey);
+            TKey? key = default;
             foreach(var pair in dictionary)
             {
                 if(pair.Value.CompareTo(value) == 0)
@@ -105,7 +103,8 @@ namespace Prakrishta.Infrastructure.Extensions
                 }
             }
 
-            dictionary.Remove(key);
+            if(key != null)
+                dictionary.Remove(key);
         }
 
         /// <summary>
