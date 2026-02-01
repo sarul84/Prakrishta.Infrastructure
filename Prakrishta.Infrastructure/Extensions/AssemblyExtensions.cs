@@ -31,10 +31,10 @@ namespace Prakrishta.Infrastructure.Extensions
                                 && !x.IsAbstract 
                                 && x != compareType
                                 && x.GetInterfaces()
-                                        .Any(i => i.IsGenericType
-                                                && i.GetGenericTypeDefinition() == compareType))?.ToList();
+                                        .Any(i => i.IsGenericTypeDefinition ? i.IsGenericType
+                                                && i.GetGenericTypeDefinition() == compareType : i == compareType))?.ToList();
 
-            return typeInfoList;
+            return typeInfoList ?? [];
         }
     }
 }

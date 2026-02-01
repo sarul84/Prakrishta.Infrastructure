@@ -26,9 +26,9 @@ namespace Prakrishta.Infrastructure.Helper
         /// <returns>The calling method information</returns>
         public static string GetCallingMethodInfo()
         {
-            StackFrame stackFrame = new StackTrace().GetFrame(1);
-            var callingType = stackFrame.GetMethod().ReflectedType.FullName;
-            var callingMethod = stackFrame.GetMethod().Name;
+            StackFrame? stackFrame = new StackTrace().GetFrame(1);
+            string? callingType = stackFrame?.GetMethod()?.ReflectedType?.FullName;
+            string? callingMethod = stackFrame?.GetMethod()?.Name;
             return $"{callingType}.{callingMethod}";
         }
 
@@ -39,10 +39,10 @@ namespace Prakrishta.Infrastructure.Helper
         /// <param name="methodName">The method name</param>
         /// <param name="methodParameters">The method parameters</param>
         /// <returns>The response <see cref="object"/></returns>
-        public static object InvokePrivateMethod(object reflectedSource, string methodName, params object[] methodParameters)
+        public static object? InvokePrivateMethod(object reflectedSource, string methodName, params object[] methodParameters)
         {
-            object result = null;
-            MethodInfo methodInfo = reflectedSource.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            object? result = null;
+            MethodInfo? methodInfo = reflectedSource.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
             if (methodInfo != null)
             {
@@ -60,14 +60,14 @@ namespace Prakrishta.Infrastructure.Helper
         /// <param name="methodName">The method name</param>
         /// <param name="methodParameters">The method parameters</param>
         /// <returns>The response <see cref="T"/></returns>
-        public static T InvokePrivateMethod<T>(object reflectedSource, string methodName, params object[] methodParameters)
+        public static T? InvokePrivateMethod<T>(object reflectedSource, string methodName, params object[] methodParameters)
         {
-            object result = null;
-            MethodInfo methodInfo = reflectedSource.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            object? result = null;
+            MethodInfo? methodInfo = reflectedSource.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
             if (methodInfo != null)
             {
-                result = methodInfo.Invoke(reflectedSource, methodParameters);
+                result = methodInfo?.Invoke(reflectedSource, methodParameters);
             }
 
             return result.GetValue<T>();
